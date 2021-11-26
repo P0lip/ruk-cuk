@@ -1,0 +1,9 @@
+.idea/
+node_modules/
+.cache/
+.nyc_output/
+coverage/
+*.log
+dist/
+.gen/
+src/parser/parser.mjs
