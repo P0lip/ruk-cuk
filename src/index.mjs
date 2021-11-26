@@ -1,8 +1,8 @@
-import Tree from "./codegen/tree.mjs";
-import OpenAPIObject from "./openapi/openapi-object.mjs";
-import ParameterObject from "./openapi/parameter-object.mjs";
-import PathItemObject from "./openapi/path-item-object.mjs";
-import SchemaObject from "./openapi/schema-object.mjs";
+import Tree from './codegen/tree.mjs';
+import OpenAPIObject from './openapi/openapi-object.mjs';
+import ParameterObject from './openapi/parameter-object.mjs';
+import PathItemObject from './openapi/path-item-object.mjs';
+import SchemaObject from './openapi/schema-object.mjs';
 
 export default function (definition, { namespace }) {
   const document = new OpenAPIObject(definition);
