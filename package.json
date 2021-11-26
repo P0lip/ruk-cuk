@@ -9,22 +9,22 @@
   },
   "packageManager": "npm@8",
   "engines": {
-    "node": ">=16.9"
+    "node": ">=14.17"
   },
   "files": [
     "bin/",
-    "src/"
+    "dist/"
   ],
   "type": "module",
   "bin": {
     "ruk-cuk": "./bin/index.mjs"
   },
   "exports": {
-    ".": "./src/index.mjs"
+    ".": "./dist/index.mjs"
   },
   "imports": {
-    "#cli/*": "./src/cli/*.mjs",
-    "#core/codegen": "./src/index.mjs"
+    "#cli/*": "./dist/cli/*.mjs",
+    "#core/codegen": "./dist/index.mjs"
   },
   "sideEffects": false,
   "license": "Apache-2.0",
@@ -34,6 +34,7 @@
     "url": "https://github.com/P0lip/ruk-cuk"
   },
   "scripts": {
+    "build": "NODE_ENV=production rollup -c",
     "lint": "ls-lint && eslint --cache --cache-location .cache/ src/**/*.mjs src/*.mjs",
     "test": "NODE_ENV=test c8 mocha --config .mocharc ./**/__tests__/**/*.test.mjs",
     "prepublishOnly": "npm run lint && npm run test"
@@ -43,6 +44,7 @@
     "@babel/eslint-parser": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@ls-lint/ls-lint": "^1.10.0",
+    "@rollup/plugin-babel": "^5.3.0",
     "c8": "^7.8.0",
     "chai": "^4.3.4",
     "eslint": "^7.32.0",
@@ -54,7 +56,8 @@
     "husky": "^4.3.8",
     "mocha": "^8.0.1",
     "mocha-each": "^2.0.1",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "rollup": "^2.56.2"
   },
   "dependencies": {
     "@babel/generator": "^7.16.0",

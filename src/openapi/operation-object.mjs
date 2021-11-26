@@ -1,4 +1,4 @@
-import assert from 'node:assert';
+import * as assert from 'node:assert';
 
 import BaseObject from './base-object.mjs';
 import ParametersVirtualObject from './parameters-virtual-object.mjs';

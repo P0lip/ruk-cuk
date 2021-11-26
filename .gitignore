@@ -5,5 +5,3 @@ node_modules/
 coverage/
 *.log
 dist/
-.gen/
-src/parser/parser.mjs
