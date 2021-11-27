@@ -28,7 +28,7 @@ export default class ResponsesVirtualObject extends BaseObject {
 
   static #isSuccessResponse(code) {
     const parsed = Number.parseInt(code);
-    return !Number.isNaN(parsed) && parsed >= 200 && parsed < 300;
+    return !Number.isNaN(parsed) && parsed >= 200 && parsed < 400;
   }
 
   static #hasBody(referenceObject) {
@@ -36,14 +36,21 @@ export default class ResponsesVirtualObject extends BaseObject {
   }
 
   #getSuccessResponses(responses) {
+    const responseObjects = [];
     if ('2XX' in responses) {
-      return [new ResponseObject(responses['2XX'], ['2XX'], this)];
-    } else {
-      return Object.keys(responses)
-        .filter(ResponsesVirtualObject.#isSuccessResponse)
-        .map(code => new ResponseObject(responses[code], [code], this));
+      responseObjects.push(new ResponseObject(responses['2XX'], ['2XX'], this));
     }
 
-    // todo: handle 3xx, 300-399?
+    if ('3XX' in responses) {
+      responseObjects.push(new ResponseObject(responses['3XX'], ['3XX'], this));
+    }
+
+    responseObjects.push(
+      ...Object.keys(responses)
+        .filter(ResponsesVirtualObject.#isSuccessResponse)
+        .map(code => new ResponseObject(responses[code], [code], this)),
+    );
+
+    return responseObjects;
   }
 }
