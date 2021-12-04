@@ -1,22 +1,24 @@
 const snakeCaseReplacer = (_, ch) => `_${ch.toUpperCase()}`;
+const pascalCaseReplacer = (_, ch) => ch.toUpperCase();
 
-const R = /[_-]([a-z])/g;
+const PATTERN = /[\s_-]+([0-9A-Za-z])/g;
 
 function isEmptyString(str) {
   return str.trim().length === 0;
 }
 
-export function toCapitalSnakeCase(input) {
+export function toSnakePascalCase(input) {
   return isEmptyString(input)
     ? ''
-    : input[0].toUpperCase() + input.slice(1).replace(R, snakeCaseReplacer);
+    : input[0].toUpperCase() +
+        input.slice(1).replace(PATTERN, snakeCaseReplacer);
 }
 
 export function toPascalCase(input) {
   return isEmptyString(input)
     ? ''
     : input[0].toUpperCase() +
-        input.slice(1).replace(R, (_, l) => `${l.toUpperCase()}`);
+        input.slice(1).replace(PATTERN, pascalCaseReplacer);
 }
 
 export function capitalize(input) {

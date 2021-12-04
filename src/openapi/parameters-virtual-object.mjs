@@ -1,6 +1,6 @@
 import { isPlainObject } from '@stoplight/json';
 
-import { capitalize } from '../utils/string.mjs';
+import { capitalize } from '../utils/strings.mjs';
 import BaseObject from './base-object.mjs';
 import ParameterObject from './parameter-object.mjs';
 import ReferenceObject from './reference-object.mjs';

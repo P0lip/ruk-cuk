@@ -1,6 +1,6 @@
 import { isPlainObject } from '@stoplight/json';
 
-import { toPascalCase } from '../utils/string.mjs';
+import { toPascalCase } from '../utils/strings.mjs';
 import BaseObject from './base-object.mjs';
 import SchemaObject from './schema-object.mjs';
 

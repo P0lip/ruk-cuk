@@ -1,7 +1,7 @@
 import { isPlainObject } from '@stoplight/json';
 
 import Scope from '../codegen/scope.mjs';
-import { toCapitalSnakeCase } from '../utils/string.mjs';
+import { toSnakePascalCase } from '../utils/strings.mjs';
 import ParameterObject from './parameter-object.mjs';
 import PathItemObject from './path-item-object.mjs';
 import ResponseObject from './response-object.mjs';
@@ -17,7 +17,7 @@ export default class OpenAPIObject {
     this.document = definition;
     this.#definition = definition;
 
-    this.name = toCapitalSnakeCase(definition.info.title);
+    this.name = toSnakePascalCase(definition.info.title);
 
     this.components = this.#getComponentsObjectContents();
     this.pathItems = this.#getPathItemObjects();
