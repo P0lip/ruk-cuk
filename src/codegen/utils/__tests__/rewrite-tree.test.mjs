@@ -1,4 +1,5 @@
 import chai from 'chai';
+import { describe, it } from 'mocha';
 
 import { MapWithUpsert } from '../../../utils/objects.mjs';
 import parseTypescript from '../parse-typescript.mjs';

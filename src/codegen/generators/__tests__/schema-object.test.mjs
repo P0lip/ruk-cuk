@@ -1,6 +1,7 @@
 import generate from '@babel/generator';
 import * as t from '@babel/types';
 import chai from 'chai';
+import { describe, it } from 'mocha';
 
 import OpenAPIObject from '../../../openapi/openapi-object.mjs';
 import generateSchemaObject from '../schema-object.mjs';
@@ -15,7 +16,7 @@ describe('SchemaObject generator', () => {
   it('handles plain primitives', () => {
     const document = {
       info: {
-        title: '_',
+        title: 'title',
       },
       paths: {},
       components: {
@@ -35,7 +36,7 @@ describe('SchemaObject generator', () => {
   it('handles plain objects', () => {
     const document = {
       info: {
-        title: '_',
+        title: 'title',
       },
       paths: {},
       components: {
@@ -64,7 +65,7 @@ describe('SchemaObject generator', () => {
   it('handles arrays', () => {
     const document = {
       info: {
-        title: '_',
+        title: 'title',
       },
       paths: {},
       components: {
@@ -98,7 +99,7 @@ describe('SchemaObject generator', () => {
   it('handles $refs pointing at unmapped areas', () => {
     const document = {
       info: {
-        title: '_',
+        title: 'title',
       },
       paths: {},
       components: {

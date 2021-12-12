@@ -1,8 +1,9 @@
 import * as t from '@babel/types';
 
+import generateContentVirtualObject from './generators/content-virtual-object.mjs';
 import generateOperationObject from './generators/operation-object.mjs';
 import generateParametersVirtualObject from './generators/parameters-virtual-object.mjs';
-import generateResponsesVirtualObject from './generators/responses-virtual-object.mjs';
+import generateResponsesObject from './generators/responses-object.mjs';
 import generateSchemaObject from './generators/schema-object.mjs';
 import printTree from './utils/print-tree.mjs';
 
@@ -58,7 +59,7 @@ export default class Tree {
 
     this.#moduleBlock.push(
       ...generateParametersVirtualObject(operationObject.parameters),
-      ...generateResponsesVirtualObject(operationObject.responses),
+      ...generateResponsesObject(operationObject.responses),
     );
   }
 
@@ -68,6 +69,12 @@ export default class Tree {
 
   addComponentsParameterObject(parameterObject) {
     this.#moduleBlock.push(...generateSchemaObject(parameterObject.schema));
+  }
+
+  addSharedContentVirtualObject(contentVirtualObject) {
+    this.#moduleBlock.push(
+      ...generateContentVirtualObject(contentVirtualObject),
+    );
   }
 
   toString() {

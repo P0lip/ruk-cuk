@@ -2,7 +2,7 @@ import ContentVirtualObject from './content-virtual-object.mjs';
 import { registerSchema } from './validation/ajv.mjs';
 
 const SCHEMA = registerSchema({
-  $id: 'ruk-cuk/response-object',
+  $id: 'ruk-cuk/request-body-object',
   $schema: 'http://json-schema.org/draft-07/schema#',
   properties: {
     content: {
@@ -12,6 +12,6 @@ const SCHEMA = registerSchema({
   type: 'object',
 });
 
-export default class ResponseObject extends ContentVirtualObject {
+export default class RequestObjectBody extends ContentVirtualObject {
   static schema = SCHEMA;
 }

@@ -1,0 +1,33 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Pets"
+  },
+  "paths": {
+    "/v1/pets/{pet_id}/state": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/PetId"
+        }
+      ],
+      "get": {
+        "operationId": "v1.petstore.getState"
+      },
+      "put": {
+        "operationId": "v1.petstore.updateState"
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "PetId": {
+        "name": "pet_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

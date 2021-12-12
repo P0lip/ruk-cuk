@@ -1,10 +1,8 @@
-import { isPlainObject } from '@stoplight/json';
-
 import { capitalize } from '../utils/strings.mjs';
-import BaseObject from './base-object.mjs';
+import BaseObject from './abstract/base-object.mjs';
 import ParameterObject from './parameter-object.mjs';
 import ReferenceObject from './reference-object.mjs';
-import SchemaObject from './schema-object.mjs';
+import RequestBodyObject from './request-body-object.mjs';
 
 export default class ParametersVirtualObject extends BaseObject {
   #value;
@@ -14,10 +12,12 @@ export default class ParametersVirtualObject extends BaseObject {
 
     this.name = `${capitalize(owner.name)}Params`;
     this.#value = [
-      ...owner.owner.parameters,
-      ...(definition.parameters?.map(this.#processParameter, this) ?? []),
-      this.#extractRequestBody(definition),
-    ].filter(Boolean);
+      ...[
+        ...owner.owner.parameters,
+        ...(definition.parameters?.map(this.#processParameter, this) ?? []),
+      ].filter(ParametersVirtualObject.#isRelevantParameter),
+      ...this.#extractRequestBody(definition),
+    ];
   }
 
   get size() {
@@ -29,18 +29,10 @@ export default class ParametersVirtualObject extends BaseObject {
   }
 
   #extractRequestBody(definition) {
-    const schema =
-      definition?.requestBody?.content?.['application/json']?.schema;
-
-    if (isPlainObject(schema)) {
-      return new SchemaObject(
-        schema,
-        ['requestBody', 'content', 'application/json', 'schema'],
-        this,
-      );
-    }
-
-    return null;
+    return 'requestBody' in definition
+      ? new RequestBodyObject(definition.requestBody, ['requestBody'], this)
+          .objects
+      : [];
   }
 
   #processParameter(parameterObjectOrReferenceObject, i) {
@@ -54,5 +46,20 @@ export default class ParametersVirtualObject extends BaseObject {
     }
 
     return new ParameterObject(parameterObjectOrReferenceObject, subpath, this);
+  }
+
+  static #isRelevantParameter(object) {
+    switch (true) {
+      case object instanceof RequestBodyObject:
+        return true;
+      case object instanceof ReferenceObject:
+        return ParametersVirtualObject.#isRelevantParameter(
+          object.referencedObject,
+        );
+      case object instanceof ParameterObject:
+        return object.in === 'path' || object.in === 'query';
+      default:
+        return false;
+    }
   }
 }

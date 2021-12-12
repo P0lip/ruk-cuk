@@ -1,11 +1,35 @@
-import * as assert from 'node:assert';
-
-import BaseObject from './base-object.mjs';
+import BaseObject from './abstract/base-object.mjs';
 import ParametersVirtualObject from './parameters-virtual-object.mjs';
-import ResponsesVirtualObject from './responses-virtual-object.mjs';
+import ResponsesObject from './responses-object.mjs';
+import { registerSchema } from './validation/ajv.mjs';
 
 const ID_REGEXP =
   /^(?<namespace>v[0-9]\.[a-zA-Z]+)\.(?<action>[a-z][A-Za-z]*)$/;
+
+const SCHEMA = registerSchema({
+  $id: 'ruk-cuk/operation-object',
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  properties: {
+    operationId: {
+      pattern: ID_REGEXP.source,
+      type: 'string',
+    },
+    parameters: {
+      items: {
+        oneOf: [
+          { $ref: './parameter-object#' },
+          { $ref: './reference-object#' },
+        ],
+      },
+      type: 'array',
+    },
+    responses: {
+      $ref: './responses-object#',
+    },
+  },
+  required: ['operationId'],
+  type: 'object',
+});
 
 export default class OperationObject extends BaseObject {
   constructor(definition, verb, owner) {
@@ -17,12 +41,12 @@ export default class OperationObject extends BaseObject {
     this.namespace = namespace;
     this.name = action;
     this.parameters = new ParametersVirtualObject(definition, this);
-    this.responses = new ResponsesVirtualObject(definition, this);
+    this.responses = new ResponsesObject(definition.responses ?? {}, this);
   }
 
+  static schema = SCHEMA;
+
   static #parseOperationId(id) {
-    const parsed = ID_REGEXP.exec(id);
-    assert.ok(parsed !== null, 'Invalid operationId specified!');
-    return parsed.groups;
+    return ID_REGEXP.exec(id).groups;
   }
 }

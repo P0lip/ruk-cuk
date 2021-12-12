@@ -1,0 +1,43 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Pets"
+  },
+  "paths": {
+    "/v1/pet": {
+      "get": {
+        "operationId": "v1.petstore.getPet",
+        "responses": {
+          "2XX": {
+            "$ref": "#/components/responses/Pet"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "Pet": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "kind": {
+                  "enum": [
+                    "Dog",
+                    "Cat"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

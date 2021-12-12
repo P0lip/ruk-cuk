@@ -5,19 +5,35 @@ import {
 } from '@stoplight/json';
 import * as assert from 'node:assert';
 
-import BaseObject from './base-object.mjs';
+import BaseObject from './abstract/base-object.mjs';
+import { registerSchema } from './validation/ajv.mjs';
+
+const SCHEMA = registerSchema({
+  $id: 'ruk-cuk/reference-object',
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  properties: {
+    $ref: {
+      type: 'string',
+    },
+  },
+  required: ['$ref'],
+  type: 'object',
+});
 
 export default class ReferenceObject extends BaseObject {
   constructor(definition, subpath, owner) {
     super(definition, subpath, owner);
 
-    this.referencedObject = ReferenceObject.retrieveObject(
+    const { name, referencedObject } = ReferenceObject.retrieveObject(
       owner.document,
       definition.$ref,
     );
 
-    this.name = this.referencedObject.name;
+    this.referencedObject = referencedObject;
+    this.name = name;
   }
+
+  static schema = SCHEMA;
 
   static retrieveObject(document, $ref) {
     const path = pointerToPath($ref);

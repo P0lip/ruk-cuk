@@ -1,7 +1,7 @@
 {
   "name": "ruk-cuk",
   "version": "0.0.0",
-  "description": "To nema smisla, ne?",
+  "description": "Generate Moleculer-compliant TypeScript typings from OpenAPI documents",
   "keywords": [],
   "homepage": "https://github.com/P0lip/ruk-cuk",
   "bugs": {
@@ -65,6 +65,8 @@
     "@babel/parser": "^7.16.3",
     "@babel/types": "^7.16.0",
     "@stoplight/json": "^3.17.1",
+    "ajv": "^8.8.2",
+    "es-aggregate-error": "^1.0.7",
     "refless-json-schema-to-typescript": "0.0.0",
     "yargs": "^17.3.0"
   }

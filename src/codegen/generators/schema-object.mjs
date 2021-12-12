@@ -1,7 +1,5 @@
-import { resolveInlineRef } from '@stoplight/json';
 import { compile } from 'refless-json-schema-to-typescript';
 
-import BaseObject from '../../openapi/base-object.mjs';
 import ReferenceObject from '../../openapi/reference-object.mjs';
 import { MapWithUpsert } from '../../utils/objects.mjs';
 import parseTypescript from '../utils/parse-typescript.mjs';
