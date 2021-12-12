@@ -4,10 +4,10 @@ import ParameterObject from './openapi/parameter-object.mjs';
 import PathItemObject from './openapi/path-item-object.mjs';
 import SchemaObject from './openapi/schema-object.mjs';
 
-export default function (definition, { namespace }) {
+export default function (definition, { tsNamespacePrefix }) {
   const document = new OpenAPIObject(definition);
   try {
-    const tree = new Tree(`${namespace}${document.name}`);
+    const tree = new Tree(`${tsNamespacePrefix}${document.name}`);
 
     for (const object of document) {
       switch (true) {

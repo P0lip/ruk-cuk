@@ -13,7 +13,7 @@ export async function* readAll(filepaths) {
 }
 
 export async function write(filepath, input, opts) {
-  await fs.writeFile(changeBasename(filepath, opts.name), input);
+  await fs.writeFile(changeBasename(filepath, opts.output), input);
 }
 
 function changeBasename(filepath, newBasename) {
