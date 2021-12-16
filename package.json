@@ -1,6 +1,6 @@
 {
   "name": "ruk-cuk",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Generate Moleculer-compliant TypeScript typings from OpenAPI documents",
   "keywords": [],
   "homepage": "https://github.com/P0lip/ruk-cuk",
@@ -9,7 +9,7 @@
   },
   "packageManager": "npm@8",
   "engines": {
-    "node": ">=14.17"
+    "node": "^12.21 || >=14.17"
   },
   "files": [
     "bin/",
@@ -20,7 +20,7 @@
     "ruk-cuk": "./bin/index.mjs"
   },
   "exports": {
-    ".": "./dist/index.mjs"
+    ".": "./dist/codegen/index.mjs"
   },
   "imports": {
     "#cli/*": "./dist/cli/*.mjs",
