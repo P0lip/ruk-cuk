@@ -1,6 +1,23 @@
+import prettier from 'prettier';
+
 import generate from '#core/codegen';
 
 import { read, readAll, write } from '../io.mjs';
+
+const CONFIG_CACHE = {};
+
+async function writeWithPrettify({ filepath, content }, argv) {
+  let code = generate(JSON.parse(content), argv);
+
+  if (argv.prettify) {
+    code = prettier.format(code, {
+      ...(CONFIG_CACHE[filepath] ??= await prettier.resolveConfig(filepath)),
+      parser: 'typescript',
+    });
+  }
+
+  await write(filepath, code, argv);
+}
 
 export default {
   builder: yargs =>
@@ -22,6 +39,11 @@ export default {
           default: 'types.d.ts',
           description: 'The name of the file to store definitions as',
           type: 'string',
+        },
+        prettify: {
+          default: true,
+          description: 'Use Prettier to format the output code',
+          type: 'boolean',
         },
         quiet: {
           alias: 'q',
@@ -49,13 +71,12 @@ export default {
       const chokidar = await import('chokidar');
       const watcher = chokidar.watch(argv.documents);
       watcher.on('change', async path => {
-        const { filepath, content } = await read(path);
-        await write(filepath, generate(JSON.parse(content), argv), argv);
+        await writeWithPrettify(await read(path), argv);
       });
     }
 
-    for await (const { filepath, content } of readAll(argv.documents)) {
-      await write(filepath, generate(JSON.parse(content), argv), argv);
+    for await (const entry of readAll(argv.documents)) {
+      await writeWithPrettify(entry, argv);
     }
   },
 };
