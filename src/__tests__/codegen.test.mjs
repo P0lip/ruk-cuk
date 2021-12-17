@@ -1,7 +1,7 @@
 import chai from 'chai';
 import { describe, it } from 'mocha';
 import forEach from 'mocha-each';
-import * as fs from 'node:fs/promises';
+import { promises as fs } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
