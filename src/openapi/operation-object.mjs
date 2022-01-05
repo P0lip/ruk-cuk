@@ -1,7 +1,7 @@
+import { registerSchema } from '../validation/ajv.mjs';
 import BaseObject from './abstract/base-object.mjs';
 import ParametersVirtualObject from './parameters-virtual-object.mjs';
 import ResponsesObject from './responses-object.mjs';
-import { registerSchema } from './validation/ajv.mjs';
 
 const ID_REGEXP =
   /^(?<namespace>v[0-9]\.[a-zA-Z]+)\.(?<action>[a-z][A-Za-z]*)$/;

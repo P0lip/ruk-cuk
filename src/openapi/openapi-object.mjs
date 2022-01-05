@@ -2,12 +2,12 @@ import { isPlainObject } from '@stoplight/json';
 
 import Scope from '../codegen/scope.mjs';
 import { toSnakePascalCase } from '../utils/strings.mjs';
+import { assertValidDefinition, registerSchema } from '../validation/ajv.mjs';
 import ParameterObject from './parameter-object.mjs';
 import PathItemObject from './path-item-object.mjs';
 import RequestBodyObject from './request-body-object.mjs';
 import ResponseObject from './response-object.mjs';
 import SchemaObject from './schema-object.mjs';
-import { assertValidDefinition, registerSchema } from './validation/ajv.mjs';
 
 const SCHEMA = registerSchema({
   $id: 'ruk-cuk/openapi-object',

@@ -5,8 +5,8 @@ import {
 } from '@stoplight/json';
 import * as assert from 'node:assert';
 
+import { registerSchema } from '../validation/ajv.mjs';
 import BaseObject from './abstract/base-object.mjs';
-import { registerSchema } from './validation/ajv.mjs';
 
 const SCHEMA = registerSchema({
   $id: 'ruk-cuk/reference-object',

@@ -1,9 +1,9 @@
 import { isPlainObject } from '@stoplight/json';
 
 import { capitalize } from '../utils/strings.mjs';
+import { registerSchema } from '../validation/ajv.mjs';
 import BaseObject from './abstract/base-object.mjs';
 import ResponseObject from './response-object.mjs';
-import { registerSchema } from './validation/ajv.mjs';
 
 const SCHEMA = registerSchema({
   $id: 'ruk-cuk/responses-object',

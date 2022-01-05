@@ -1,8 +1,8 @@
 import chai from 'chai';
 import { describe, it } from 'mocha';
 
+import { AjvValidationError } from '../../validation/ajv.mjs';
 import ResponsesObject from '../responses-object.mjs';
-import { AjvValidationError } from '../validation/ajv.mjs';
 
 const { expect } = chai;
 

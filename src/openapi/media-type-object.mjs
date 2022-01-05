@@ -1,9 +1,9 @@
 import { isPlainObject } from '@stoplight/json';
 
+import { registerSchema } from '../validation/ajv.mjs';
 import BaseObject from './abstract/base-object.mjs';
 import ReferenceObject from './reference-object.mjs';
 import SchemaObject from './schema-object.mjs';
-import { registerSchema } from './validation/ajv.mjs';
 
 const SCHEMA = registerSchema({
   $id: 'ruk-cuk/media-object',

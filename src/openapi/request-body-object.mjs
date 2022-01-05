@@ -1,5 +1,5 @@
+import { registerSchema } from '../validation/ajv.mjs';
 import ContentVirtualObject from './content-virtual-object.mjs';
-import { registerSchema } from './validation/ajv.mjs';
 
 const SCHEMA = registerSchema({
   $id: 'ruk-cuk/request-body-object',
