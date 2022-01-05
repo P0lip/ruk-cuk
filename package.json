@@ -1,7 +1,7 @@
 {
   "name": "ruk-cuk",
-  "version": "0.2.0",
-  "description": "Generate Moleculer-compliant TypeScript typings from OpenAPI documents",
+  "version": "0.2.1",
+  "description": "Generate Moleculer-compliant TypeScript typings from 3.x OpenAPI documents",
   "keywords": [],
   "homepage": "https://github.com/P0lip/ruk-cuk",
   "bugs": {
@@ -24,7 +24,8 @@
   },
   "imports": {
     "#cli/*": "./dist/cli/*.mjs",
-    "#core/codegen": "./dist/codegen/index.mjs"
+    "#codegen": "./dist/codegen/index.mjs",
+    "#config": "./dist/config/index.mjs"
   },
   "sideEffects": false,
   "license": "Apache-2.0",

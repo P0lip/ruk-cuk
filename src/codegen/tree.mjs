@@ -19,13 +19,13 @@ export default class Tree {
   #moduleBlock;
   #actions = [];
 
-  constructor(service) {
+  constructor({ name, includeEvents }) {
     this.#moduleBlock = [
       Tree.#generateActionAliasDeclaration(this.#actions),
-      EVENTS_TYPE,
+      ...(includeEvents ? [EVENTS_TYPE] : []),
     ];
 
-    this.#root = Tree.#generateModuleDeclaration(service, this.#moduleBlock);
+    this.#root = Tree.#generateModuleDeclaration(name, this.#moduleBlock);
   }
 
   static #generateActionAliasDeclaration(actions) {

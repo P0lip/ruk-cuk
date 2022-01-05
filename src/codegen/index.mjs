@@ -5,10 +5,13 @@ import PathItemObject from '../openapi/path-item-object.mjs';
 import SchemaObject from '../openapi/schema-object.mjs';
 import Tree from './tree.mjs';
 
-export default function (definition, { tsNamespacePrefix }) {
+export default function (definition, { tsNamespacePrefix, tsSkipEvents }) {
   const document = new OpenAPIObject(definition);
   try {
-    const tree = new Tree(`${tsNamespacePrefix}${document.name}`);
+    const tree = new Tree({
+      includeEvents: !tsSkipEvents,
+      name: `${tsNamespacePrefix}${document.name}`,
+    });
 
     for (const object of document) {
       switch (true) {

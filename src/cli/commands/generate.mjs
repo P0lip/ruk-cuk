@@ -1,6 +1,6 @@
 import prettier from 'prettier';
 
-import generate from '#core/codegen';
+import generate from '#codegen';
 
 import { read, readAll, write } from '../io.mjs';
 
@@ -55,6 +55,11 @@ export default {
           default: '',
           description: 'Prefix used within the TypeScript declaration name',
           type: 'string',
+        },
+        'ts-skip-events': {
+          default: false,
+          description: 'Exclude events definitions',
+          type: 'boolean',
         },
         watch: {
           alias: 'w',
