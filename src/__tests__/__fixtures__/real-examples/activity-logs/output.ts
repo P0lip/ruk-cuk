@@ -8,15 +8,10 @@ declare namespace Activity {
   type Events = never;
   type ByWorkspaceParams = {
     workspace_id: string;
-  } & {
     before?: string;
-  } & {
     after?: string;
-  } & {
     limit?: number;
-  } & {
     type?: ActivityType[];
-  } & {
     group?: string;
   };
   type ByWorkspaceResponse = Activity[];

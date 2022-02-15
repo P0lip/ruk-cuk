@@ -35,7 +35,7 @@ const SCHEMA = registerSchema({
         },
         schemas: {
           additionalProperties: {
-            oneOf: [
+            anyOf: [
               { $ref: './schema-object#' },
               { $ref: './reference-object#' },
             ],

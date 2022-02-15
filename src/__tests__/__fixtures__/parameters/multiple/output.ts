@@ -8,7 +8,6 @@ declare namespace Pets {
   type Events = never;
   type GetStateParams = PetId & {
     size: "s" | "m" | "l";
-  } & {
     kind?: string;
   };
   type UpdateStateParams = PetId;
