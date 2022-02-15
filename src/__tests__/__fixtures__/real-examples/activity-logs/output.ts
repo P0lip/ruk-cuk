@@ -48,27 +48,27 @@ declare namespace Activity {
   type Activity = {
     id: string;
     type: ActivityType;
+
     /**
      * Additional information specific to the activity type
      */
-
     metadata: {
       [k: string]: unknown;
     };
+
     /**
      * Timestamp when the activity was performed
      */
-
     created_at: string;
+
     /**
      * IP address of client where the activity was performed
      */
-
     ip_address: string | null;
+
     /**
      * User who performed the activity
      */
-
     actor: {
       name: string;
       email: string;
@@ -81,15 +81,15 @@ declare namespace Activity {
      * Detailed error message
      */
     message: string;
+
     /**
      * HTTP Status Code
      */
-
     code: 400 | 401 | 403 | 404 | 409 | 500;
+
     /**
      * Error type
      */
-
     type?: string;
     [k: string]: unknown;
   };

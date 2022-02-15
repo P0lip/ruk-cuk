@@ -2,6 +2,8 @@ import * as t from '@babel/types';
 import * as assert from 'node:assert';
 
 export default function rewriteTree(node, ids) {
+  node.trailingComments &&= [];
+
   switch (node.type) {
     case 'Program':
       for (const [i, child] of node.body.entries()) {

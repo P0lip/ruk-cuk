@@ -129,4 +129,46 @@ describe('SchemaObject generator', () => {
 
     expect(print(object)).to.eq(`type Users = User["properties"]["id"][];`);
   });
+
+  it('pretty prints comments', () => {
+    const document = {
+      info: {
+        title: 'title',
+      },
+      paths: {},
+      components: {
+        schemas: {
+          User: {
+            type: 'object',
+            properties: {
+              id: {
+                description: 'Unique identifier',
+                type: 'integer',
+              },
+              name: {
+                description: 'Name of a user',
+                type: 'integer',
+              },
+            },
+            required: ['id'],
+            additionalProperties: false,
+          },
+        },
+      },
+    };
+
+    const object = new OpenAPIObject(document).components[0];
+
+    expect(print(object)).to.eq(`type User = {
+  /**
+   * Unique identifier
+   */
+  id: number;
+
+  /**
+   * Name of a user
+   */
+  name?: number;
+};`);
+  });
 });
