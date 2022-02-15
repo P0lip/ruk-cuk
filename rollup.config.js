@@ -17,7 +17,13 @@ export default [
       id.startsWith('@babel/runtime') ||
       id.startsWith('node:') ||
       Object.keys(pkg.dependencies).includes(id),
-    input: ['./src/codegen/index.mjs', './src/cli/bootstrap.mjs'],
+    input: [
+      './src/codegen/index.mjs',
+      './src/cli/bootstrap.mjs',
+      './src/config/index.mjs',
+      './src/config/resolve.node.mjs',
+      './src/config/resolve.browser.mjs',
+    ],
     output: [
       {
         dir: 'dist',

@@ -18,14 +18,22 @@ export default class Tree {
   #operations = {};
   #moduleBlock;
   #actions = [];
+  #header;
+  #footer;
 
-  constructor({ name, includeEvents }) {
+  constructor(document, config) {
+    this.#header = config.header ?? '';
+    this.#footer = config.footer ?? '';
+
     this.#moduleBlock = [
       Tree.#generateActionAliasDeclaration(this.#actions),
-      ...(includeEvents ? [EVENTS_TYPE] : []),
-    ];
+      ...(config.skipEvents ? [] : [EVENTS_TYPE]),
+    ].filter(Boolean);
 
-    this.#root = Tree.#generateModuleDeclaration(name, this.#moduleBlock);
+    this.#root = Tree.#generateModuleDeclaration(
+      `${config.namespacePrefix}${document.name}`,
+      this.#moduleBlock,
+    );
   }
 
   static #generateActionAliasDeclaration(actions) {
@@ -85,6 +93,6 @@ export default class Tree {
       ),
     );
 
-    return printTree(this.#root);
+    return [this.#header, printTree(this.#root), this.#footer].join('\n');
   }
 }

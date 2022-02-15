@@ -5,7 +5,7 @@ import { promises as fs } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import generate from '../codegen/index.mjs';
+import generate from '../index.mjs';
 
 const { expect } = chai;
 
@@ -29,7 +29,7 @@ const cases = await (async function traverse(currentDir, items) {
 
 describe('Codegen', () => {
   forEach(Array.from(cases), it, describe).describe('given %s', name => {
-    it('should match output', async () => {
+    it('matches output', async () => {
       const input = JSON.parse(
         await fs.readFile(join(cwd, name, 'input.json'), 'utf8'),
       );
@@ -37,7 +37,33 @@ describe('Codegen', () => {
         await fs.readFile(join(cwd, name, 'output.ts'), 'utf8')
       ).trim();
 
-      expect(generate(input, { tsNamespacePrefix: '' }).trim()).to.eq(output);
+      expect(
+        generate(input, { namespacePrefix: '', skipEvents: false }).trim(),
+      ).to.eq(output);
     });
+  });
+
+  it('supports header and footer', () => {
+    const input = {
+      info: {
+        title: 'title',
+      },
+      paths: {},
+      components: {},
+    };
+
+    expect(
+      generate(input, {
+        footer: '// I am a footer!',
+        header: '// I am a header!',
+        namespacePrefix: '',
+        skipEvents: false,
+      }).trim(),
+    ).to.eq(`// I am a header!
+declare namespace Title {
+  type Actions = {};
+  type Events = never;
+}
+// I am a footer!`);
   });
 });

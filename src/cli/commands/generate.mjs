@@ -1,17 +1,28 @@
 import prettier from 'prettier';
 
 import generate from '#codegen';
+import loadConfig from '#config/load';
 
 import { read, readAll, write } from '../io.mjs';
 
-const CONFIG_CACHE = {};
+const CONFIG_CACHE = {
+  own: {},
+  prettier: {},
+};
 
 async function writeWithPrettify({ filepath, content }, argv) {
-  let code = generate(JSON.parse(content), argv);
+  const config = (CONFIG_CACHE.own[filepath] ??= await loadConfig(filepath, {
+    namespacePrefix: argv.tsNamespacePrefix,
+    skipEvents: argv.tsSkipEvents,
+  }));
+
+  let code = generate(JSON.parse(content), config);
 
   if (argv.prettify) {
     code = prettier.format(code, {
-      ...(CONFIG_CACHE[filepath] ??= await prettier.resolveConfig(filepath)),
+      ...(CONFIG_CACHE.prettier[filepath] ??= await prettier.resolveConfig(
+        filepath,
+      )),
       parser: 'typescript',
     });
   }

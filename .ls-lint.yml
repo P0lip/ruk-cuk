@@ -1,7 +1,12 @@
 ls:
-  .mjs: kebab-case
   .js: kebab-case
+  .mjs: kebab-case
+  .cjs: kebab-case
+  .node.mjs: kebab-case
+  .browser.mjs: kebab-case
   .test.mjs: kebab-case
+  .browser.test.mjs: kebab-case
+  .node.test.mjs: kebab-case
 
 ignore:
   - dist

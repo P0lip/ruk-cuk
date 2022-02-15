@@ -1,6 +1,6 @@
 {
   "name": "ruk-cuk",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Generate Moleculer-compliant TypeScript typings from 3.x OpenAPI documents",
   "keywords": [],
   "homepage": "https://github.com/P0lip/ruk-cuk",
@@ -25,7 +25,12 @@
   "imports": {
     "#cli/*": "./dist/cli/*.mjs",
     "#codegen": "./dist/codegen/index.mjs",
-    "#config": "./dist/config/index.mjs"
+    "#config/load": "./dist/config/index.mjs",
+    "#config/resolve": {
+      "default": "./dist/config/resolve.node.mjs",
+      "node": "./dist/config/resolve.node.mjs",
+      "browser": "./dist/config/resolve.browser.mjs"
+    }
   },
   "sideEffects": false,
   "license": "Apache-2.0",
@@ -38,7 +43,7 @@
     "build": "NODE_ENV=production rollup -c",
     "lint": "ls-lint && eslint --cache --cache-location .cache/ --ext=.mjs src/",
     "test": "NODE_ENV=test c8 mocha --config .mocharc ./**/__tests__/**/*.test.mjs",
-    "prepublishOnly": "npm run lint && npm run test"
+    "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
@@ -49,6 +54,7 @@
     "@types/yargs": "^17.0.7",
     "c8": "^7.8.0",
     "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-chai-expect": "^2.2.0",
