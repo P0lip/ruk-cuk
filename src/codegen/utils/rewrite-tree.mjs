@@ -24,6 +24,23 @@ export default function rewriteTree(node, ids) {
 
       return t.tsTypeLiteral(node.body);
     case 'TSTypeLiteral':
+      if (
+        node.members.length === 1 &&
+        node.members[0].type === 'TSIndexSignature' &&
+        node.members[0].parameters.length === 1
+      ) {
+        return t.tsTypeReference(
+          t.identifier('Record'),
+          t.tsTypeParameterInstantiation([
+            rewriteTree(
+              node.members[0].parameters[0].typeAnnotation.typeAnnotation,
+              ids,
+            ),
+            rewriteTree(node.members[0].typeAnnotation.typeAnnotation, ids),
+          ]),
+        );
+      }
+
       for (const [i, child] of node.members.entries()) {
         node.members[i] = rewriteTree(child, ids);
       }
@@ -41,6 +58,7 @@ export default function rewriteTree(node, ids) {
       node.typeAnnotation = rewriteTree(node.typeAnnotation, ids);
       return node;
     case 'TSIntersectionType':
+    case 'TSUnionType':
       for (const [i, child] of node.types.entries()) {
         node.types[i] = rewriteTree(child, ids);
       }

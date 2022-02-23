@@ -1,6 +1,6 @@
 {
   "name": "ruk-cuk",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Generate Moleculer-compliant TypeScript typings from 3.x OpenAPI documents",
   "keywords": [],
   "homepage": "https://github.com/P0lip/ruk-cuk",

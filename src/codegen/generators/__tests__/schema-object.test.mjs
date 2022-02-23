@@ -171,4 +171,50 @@ describe('SchemaObject generator', () => {
   name?: number;
 };`);
   });
+
+  it('uses Record where applicable', () => {
+    const document = {
+      info: {
+        title: 'title',
+      },
+      paths: {},
+      components: {
+        schemas: {
+          Dictionary: {
+            anyOf: [
+              {
+                type: 'object',
+              },
+              {
+                type: 'object',
+                additionalProperties: {
+                  type: 'number',
+                },
+              },
+              {
+                type: 'object',
+                additionalProperties: {
+                  type: 'object',
+                  properties: {
+                    test: {
+                      type: 'string',
+                    },
+                  },
+                  additionalProperties: false,
+                },
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    const object = new OpenAPIObject(document).components[0];
+
+    expect(print(object)).to.eq(
+      `type Dictionary = Record<string, unknown> | Record<string, number> | Record<string, {
+  test?: string;
+}>;`,
+    );
+  });
 });

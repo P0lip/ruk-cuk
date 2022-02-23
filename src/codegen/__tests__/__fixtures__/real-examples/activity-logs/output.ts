@@ -17,17 +17,11 @@ declare namespace Activity {
   type ByWorkspaceResponse = Activity[];
   type HasuraEventHandlerParams = {
     event: {
-      session_variables: {
-        [k: string]: unknown;
-      } | null;
+      session_variables: Record<string, unknown> | null;
       op: "INSERT" | "UPDATE" | "DELETE" | "MANUAL";
       data: {
-        old: {
-          [k: string]: unknown;
-        } | null;
-        new: {
-          [k: string]: unknown;
-        } | null;
+        old: Record<string, unknown> | null;
+        new: Record<string, unknown> | null;
         [k: string]: unknown;
       };
       [k: string]: unknown;
@@ -52,9 +46,7 @@ declare namespace Activity {
     /**
      * Additional information specific to the activity type
      */
-    metadata: {
-      [k: string]: unknown;
-    };
+    metadata: Record<string, unknown>;
 
     /**
      * Timestamp when the activity was performed
