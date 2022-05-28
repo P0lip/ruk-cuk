@@ -2,9 +2,9 @@ import chalk from 'chalk';
 import process from 'node:process';
 import prettier from 'prettier';
 
-import generate from '#codegen';
 import loadConfig from '#config/load';
 
+import generate from '../../codegen/index.mjs';
 import { read, readAll, write } from '../io.mjs';
 
 const CONFIG_CACHE = {

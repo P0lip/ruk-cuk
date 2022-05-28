@@ -9,27 +9,26 @@
   },
   "packageManager": "npm@8",
   "engines": {
-    "node": ">=14.17"
+    "node": ">=16.10"
   },
   "files": [
     "bin/",
-    "dist/"
+    "src/"
   ],
   "type": "module",
   "bin": {
     "ruk-cuk": "./bin/index.mjs"
   },
   "exports": {
-    ".": "./dist/codegen/index.mjs"
+    ".": "./src/codegen/index.mjs"
   },
   "imports": {
-    "#cli/*": "./dist/cli/*.mjs",
-    "#codegen": "./dist/codegen/index.mjs",
-    "#config/load": "./dist/config/index.mjs",
+    "#cli/*": "./src/cli/*.mjs",
+    "#config/load": "./src/config/index.mjs",
     "#config/resolve": {
-      "default": "./dist/config/resolve.node.mjs",
-      "node": "./dist/config/resolve.node.mjs",
-      "browser": "./dist/config/resolve.browser.mjs"
+      "default": "./src/config/resolve.node.mjs",
+      "node": "./src/config/resolve.node.mjs",
+      "browser": "./src/config/resolve.browser.mjs"
     }
   },
   "sideEffects": false,
@@ -40,22 +39,17 @@
     "url": "https://github.com/P0lip/ruk-cuk"
   },
   "scripts": {
-    "build": "NODE_ENV=production rollup -c",
     "lint": "ls-lint && eslint --cache --cache-location .cache/ --ext=.mjs src/",
     "test": "NODE_ENV=test c8 mocha --config .mocharc ./**/__tests__/**/*.test.mjs",
-    "prepublishOnly": "npm run lint && npm run test && npm run build"
+    "prepublishOnly": "npm run lint && npm run test"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.0",
-    "@babel/eslint-parser": "^7.15.0",
-    "@babel/preset-env": "^7.15.0",
     "@ls-lint/ls-lint": "^1.10.0",
-    "@rollup/plugin-babel": "^5.3.0",
     "@types/yargs": "^17.0.7",
     "c8": "^7.8.0",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^7.32.0",
+    "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-chai-expect": "^2.2.0",
     "eslint-plugin-chai-friendly": "^0.7.2",
@@ -64,8 +58,7 @@
     "husky": "^4.3.8",
     "mocha": "^8.0.1",
     "mocha-each": "^2.0.1",
-    "prettier": "^2.5.1",
-    "rollup": "^2.56.2"
+    "prettier": "^2.5.1"
   },
   "dependencies": {
     "@babel/generator": "^7.16.5",
