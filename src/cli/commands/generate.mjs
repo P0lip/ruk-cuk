@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+import process from 'node:process';
 import prettier from 'prettier';
 
 import generate from '#codegen';
@@ -16,18 +18,24 @@ async function writeWithPrettify({ filepath, content }, argv) {
     skipEvents: argv.tsSkipEvents,
   }));
 
-  let code = generate(JSON.parse(content), config);
+  try {
+    let code = generate(JSON.parse(content), config);
 
-  if (argv.prettify) {
-    code = prettier.format(code, {
-      ...(CONFIG_CACHE.prettier[filepath] ??= await prettier.resolveConfig(
-        filepath,
-      )),
-      parser: 'typescript',
-    });
+    if (argv.prettify) {
+      code = prettier.format(code, {
+        ...(CONFIG_CACHE.prettier[filepath] ??= await prettier.resolveConfig(
+          filepath,
+        )),
+        parser: 'typescript',
+      });
+    }
+
+    await write(filepath, code, argv);
+  } catch (e) {
+    for (const ex of 'errors' in e ? e.errors : [e]) {
+      process.stderr.write(`${chalk.red(ex.message)}\n`);
+    }
   }
-
-  await write(filepath, code, argv);
 }
 
 export default {

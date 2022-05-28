@@ -4,7 +4,15 @@ import * as assert from 'node:assert';
 
 const ajv = new Ajv({ strict: true });
 
-export class AjvValidationError extends AggregateError {}
+export class AjvValidationError extends AggregateError {
+  constructor(errors) {
+    super(
+      errors.map(
+        e => new Error(`${e.instancePath} ${e.message}`, { cause: e }),
+      ),
+    );
+  }
+}
 
 export function registerSchema(schema) {
   ajv.addSchema(schema);
