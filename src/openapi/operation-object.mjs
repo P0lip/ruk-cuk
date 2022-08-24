@@ -4,7 +4,7 @@ import ParametersVirtualObject from './parameters-virtual-object.mjs';
 import ResponsesObject from './responses-object.mjs';
 
 const ID_REGEXP =
-  /^(?<namespace>v[0-9]\.[a-zA-Z]+)\.(?<action>[a-z][A-Za-z]*)$/;
+  /^(?<namespace>v[0-9]\.[a-zA-Z_-]+)\.(?<action>[a-z][A-Za-z]*)$/;
 
 const SCHEMA = registerSchema({
   $id: 'ruk-cuk/operation-object',
