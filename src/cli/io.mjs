@@ -17,8 +17,15 @@ export async function read(filepath) {
 }
 
 export async function write(filepath, input, opts) {
-  const outputPath = changeBasename(filepath, opts.output);
+  const outputPath =
+    path.dirname(opts.output) === '.'
+      ? // replace basename if output contains file name
+        changeBasename(filepath, opts.output)
+      : // use the full file path otherwise
+        opts.output;
+
   await fs.writeFile(outputPath, input);
+
   if (!opts.quiet) {
     process.stdout.write(
       chalk.green(`Written ${outputPath} for ${filepath}\n`),
