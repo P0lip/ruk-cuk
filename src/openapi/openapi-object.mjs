@@ -100,34 +100,20 @@ export default class OpenAPIObject {
     const objects = [];
 
     if ('parameters' in components) {
-      for (const [key, definition] of Object.entries(components.parameters)) {
-        objects.push(
-          new ParameterObject(
-            definition,
-            ['components', 'parameters', key],
-            this,
-          ),
-        );
+      for (const definition of Object.values(components.parameters)) {
+        objects.push(new ParameterObject(definition, this));
       }
     }
 
     if ('schemas' in components) {
       for (const [key, definition] of Object.entries(components.schemas)) {
-        objects.push(
-          new SchemaObject(definition, ['components', 'schemas', key], this),
-        );
+        objects.push(new SchemaObject(definition, this, key));
       }
     }
 
     if ('responses' in components) {
       for (const [key, definition] of Object.entries(components.responses)) {
-        objects.push(
-          new ResponseObject(
-            definition,
-            ['components', 'responses', key],
-            this,
-          ),
-        );
+        objects.push(new ResponseObject(definition, this, key));
       }
     }
 
@@ -135,13 +121,7 @@ export default class OpenAPIObject {
       for (const [key, definition] of Object.entries(
         components.requestBodies,
       )) {
-        objects.push(
-          new RequestBodyObject(
-            definition,
-            ['components', 'requestBodies', key],
-            this,
-          ),
-        );
+        objects.push(new RequestBodyObject(definition, this, key));
       }
     }
 
@@ -151,8 +131,8 @@ export default class OpenAPIObject {
   #getPathItemObjects() {
     const pathItems = [];
 
-    for (const [key, definition] of Object.entries(this.#definition.paths)) {
-      pathItems.push(new PathItemObject(definition, key, this));
+    for (const definition of Object.values(this.#definition.paths)) {
+      pathItems.push(new PathItemObject(definition, this));
     }
 
     return pathItems;

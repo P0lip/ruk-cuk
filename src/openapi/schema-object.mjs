@@ -9,13 +9,14 @@ const SCHEMA = registerSchema({
 });
 
 export default class SchemaObject extends BaseObject {
-  constructor(definition, subpath, owner) {
-    super(definition, subpath, owner);
+  constructor(definition, owner, name) {
+    super(definition, owner);
 
-    this.name = subpath[subpath.length - 1];
+    this.value = definition;
+    this.name = name;
+
     this.scope.store(this);
     this.name = this.scope.load(this);
-    this.value = definition;
   }
 
   static schema = SCHEMA;

@@ -28,8 +28,8 @@ const SCHEMA = registerSchema({
 });
 
 export default class ParameterObject extends BaseObject {
-  constructor(definition, subpath, owner) {
-    super(definition, subpath, owner);
+  constructor(definition, owner) {
+    super(definition, owner);
 
     this.name = toPascalCase(definition.name);
     this.in = definition.in;
@@ -46,8 +46,7 @@ export default class ParameterObject extends BaseObject {
       type: 'object',
     };
 
-    this.schema = new SchemaObject(schema, ['schema'], this);
-    this.schema.name = this.name;
+    this.schema = new SchemaObject(schema, this, this.name);
   }
 
   static schema = SCHEMA;

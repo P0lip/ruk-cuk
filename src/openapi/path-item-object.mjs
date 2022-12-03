@@ -44,15 +44,15 @@ const SCHEMA = registerSchema({
 });
 
 export default class PathItemObject extends BaseObject {
-  constructor(definition, path, owner) {
-    super(definition, ['paths', path], owner);
+  constructor(definition, owner) {
+    super(definition, owner);
 
-    this.name = path;
+    this.name = '';
     this.parameters =
       definition.parameters?.map(PathItemObject.#processParameter, this) ?? [];
     this.operations = Object.keys(definition)
       .filter(PathItemObject.#isHttpVerb)
-      .map(verb => new OperationObject(definition[verb], verb, this));
+      .map(verb => new OperationObject(definition[verb], this));
   }
 
   static schema = SCHEMA;
@@ -62,26 +62,16 @@ export default class PathItemObject extends BaseObject {
   }
 
   // todo: share with ParameterObject
-  static #processParameter(parameterObjectOrReferenceObject, i) {
-    const subpath = ['parameters', String(i)];
+  static #processParameter(parameterObjectOrReferenceObject) {
     if (!('$ref' in parameterObjectOrReferenceObject)) {
-      return new ParameterObject(
-        parameterObjectOrReferenceObject,
-        subpath,
-        this,
-      );
+      return new ParameterObject(parameterObjectOrReferenceObject, this);
     } else if (!isSharedComponentRef(parameterObjectOrReferenceObject.$ref)) {
       return new ParameterObject(
         resolveInlineRef(this.document, parameterObjectOrReferenceObject.$ref),
-        subpath,
         this,
       );
     } else {
-      return new ReferenceObject(
-        parameterObjectOrReferenceObject,
-        subpath,
-        this,
-      );
+      return new ReferenceObject(parameterObjectOrReferenceObject, this);
     }
   }
 }

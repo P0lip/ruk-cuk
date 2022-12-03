@@ -17,22 +17,18 @@ const SCHEMA = registerSchema({
 });
 
 export class MediaTypeObject extends BaseObject {
-  constructor(definition, subpath, owner) {
-    super(definition, subpath, owner);
+  constructor(definition, owner) {
+    super(definition, owner);
 
-    this.schema = new SchemaObject(
-      definition.schema ?? {},
-      [...subpath, 'schema'],
-      this,
-    );
+    this.schema = new SchemaObject(definition.schema ?? {}, this, 'schema');
   }
 
   static schema = SCHEMA;
 
-  static createMediaTypeObjects(definition, subpath, owner) {
+  static createMediaTypeObjects(definition, owner) {
     if ('$ref' in definition) {
       if (isSharedComponentRef(definition.$ref)) {
-        return [new ReferenceObject(definition, [...subpath, '$ref'], owner)];
+        return [new ReferenceObject(definition, owner)];
       } else {
         definition = resolveInlineRef(owner.document, definition.$ref);
       }
@@ -43,11 +39,7 @@ export class MediaTypeObject extends BaseObject {
     if (isPlainObject(definition.content)) {
       for (const key of Object.keys(definition.content)) {
         mediaTypeObjects.push(
-          new MediaTypeObject(
-            definition.content[key],
-            [...subpath, 'content', key],
-            owner,
-          ),
+          new MediaTypeObject(definition.content[key], owner),
         );
       }
     }

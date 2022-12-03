@@ -49,7 +49,7 @@ export default class ResponsesObject extends BaseObject {
   #value;
 
   constructor(definition, owner) {
-    super(definition, ['responses'], owner);
+    super(definition, owner);
 
     this.name = `${capitalize(owner.name)}Response`;
     this.#value = isPlainObject(definition)
@@ -81,17 +81,17 @@ export default class ResponsesObject extends BaseObject {
   #getSuccessResponses(responses) {
     const responseObjects = [];
     if ('2XX' in responses) {
-      responseObjects.push(new ResponseObject(responses['2XX'], ['2XX'], this));
+      responseObjects.push(new ResponseObject(responses['2XX'], this));
     }
 
     if ('3XX' in responses) {
-      responseObjects.push(new ResponseObject(responses['3XX'], ['3XX'], this));
+      responseObjects.push(new ResponseObject(responses['3XX'], this));
     }
 
     responseObjects.push(
       ...Object.keys(responses)
         .filter(ResponsesObject.#isSuccessResponse)
-        .map(code => new ResponseObject(responses[code], [code], this)),
+        .map(code => new ResponseObject(responses[code], this)),
     );
 
     return responseObjects;

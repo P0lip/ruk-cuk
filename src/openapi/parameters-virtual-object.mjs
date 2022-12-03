@@ -12,7 +12,7 @@ export default class ParametersVirtualObject extends BaseObject {
   #requestBody;
 
   constructor(definition, owner) {
-    super(definition, ['parameters'], owner);
+    super(definition, owner);
 
     this.name = `${capitalize(owner.name)}Params`;
     this.#parameters = [
@@ -36,31 +36,20 @@ export default class ParametersVirtualObject extends BaseObject {
 
   #extractRequestBody(definition) {
     return 'requestBody' in definition
-      ? new RequestBodyObject(definition.requestBody, ['requestBody'], this)
-          .objects
+      ? new RequestBodyObject(definition.requestBody, this).objects
       : [];
   }
 
-  #processParameter(parameterObjectOrReferenceObject, i) {
-    const subpath = ['parameters', String(i)];
+  #processParameter(parameterObjectOrReferenceObject) {
     if (!('$ref' in parameterObjectOrReferenceObject)) {
-      return new ParameterObject(
-        parameterObjectOrReferenceObject,
-        subpath,
-        this,
-      );
+      return new ParameterObject(parameterObjectOrReferenceObject, this);
     } else if (!isSharedComponentRef(parameterObjectOrReferenceObject.$ref)) {
       return new ParameterObject(
         resolveInlineRef(this.document, parameterObjectOrReferenceObject.$ref),
-        subpath,
         this,
       );
     } else {
-      return new ReferenceObject(
-        parameterObjectOrReferenceObject,
-        subpath,
-        this,
-      );
+      return new ReferenceObject(parameterObjectOrReferenceObject, this);
     }
   }
 

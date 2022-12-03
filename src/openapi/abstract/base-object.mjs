@@ -2,14 +2,12 @@ import { assertValidDefinition } from '../../validation/ajv.mjs';
 
 export default class BaseObject {
   #definition;
-  #path;
   #root;
 
-  constructor(definition, subpath, owner) {
+  constructor(definition, owner) {
     BaseObject.#assertValidDefinition(definition, this);
 
     this.#definition = definition;
-    this.subpath = subpath;
     this.owner = owner;
 
     BaseObject.#store.set(definition, this);
@@ -26,14 +24,6 @@ export default class BaseObject {
     if (schema !== void 0) {
       assertValidDefinition(definition, schema);
     }
-  }
-
-  get path() {
-    if (!this.owner.path) {
-      return this.subpath;
-    }
-
-    return (this.#path ??= [...this.owner.path, ...this.subpath]);
   }
 
   get scope() {

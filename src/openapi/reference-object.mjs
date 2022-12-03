@@ -24,8 +24,8 @@ export default class ReferenceObject extends BaseObject {
   #_resolved;
   #reference;
 
-  constructor(definition, subpath, owner) {
-    super(definition, subpath, owner);
+  constructor(definition, owner) {
+    super(definition, owner);
 
     this.#reference = definition.$ref;
   }

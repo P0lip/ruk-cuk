@@ -31,11 +31,11 @@ const SCHEMA = registerSchema({
 });
 
 export default class ContentVirtualObject extends BaseObject {
-  constructor(definition, subpath, owner) {
-    super(definition, subpath, owner);
+  constructor(definition, owner, name) {
+    super(definition, owner);
 
-    this.name = subpath[subpath.length - 1];
-    this.objects = MediaTypeObject.createMediaTypeObjects(definition, [], this);
+    this.name = name;
+    this.objects = MediaTypeObject.createMediaTypeObjects(definition, this);
   }
 
   static schema = SCHEMA;

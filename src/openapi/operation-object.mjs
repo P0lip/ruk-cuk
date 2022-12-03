@@ -32,8 +32,8 @@ const SCHEMA = registerSchema({
 });
 
 export default class OperationObject extends BaseObject {
-  constructor(definition, verb, owner) {
-    super(definition, [verb], owner);
+  constructor(definition, owner) {
+    super(definition, owner);
 
     const { action, namespace } = OperationObject.#parseOperationId(
       definition.operationId,
