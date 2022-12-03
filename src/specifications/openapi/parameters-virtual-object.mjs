@@ -1,7 +1,7 @@
 import { resolveInlineRef } from '@stoplight/json';
 
 import { capitalize } from '../../utils/strings.mjs';
-import BaseObject from './abstract/base-object.mjs';
+import BaseObject from '../shared/base-object.mjs';
 import ParameterObject from './parameter-object.mjs';
 import ReferenceObject from './reference-object.mjs';
 import RequestBodyObject from './request-body-object.mjs';

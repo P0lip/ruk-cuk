@@ -1,16 +1,13 @@
-import { assertValidDefinition } from '../../../validation/ajv.mjs';
+import { assertValidDefinition } from '../../validation/ajv.mjs';
 
 export default class BaseObject {
-  #definition;
   #root;
 
   constructor(definition, owner) {
     BaseObject.#assertValidDefinition(definition, this);
 
-    this.#definition = definition;
     this.owner = owner;
-
-    BaseObject.#store.set(definition, this);
+    this.resolver.store(definition, this);
   }
 
   static #store = new WeakMap();
@@ -41,6 +38,10 @@ export default class BaseObject {
     }
 
     return this.#root;
+  }
+
+  get resolver() {
+    return this.root.resolver;
   }
 
   get document() {

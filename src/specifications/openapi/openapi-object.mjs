@@ -1,5 +1,6 @@
 import { isPlainObject } from '@stoplight/json';
 
+import Resolver from '../../codegen/resolver.mjs';
 import Scope from '../../codegen/scope.mjs';
 import { toSnakePascalCase } from '../../utils/strings.mjs';
 import {
@@ -78,10 +79,11 @@ export default class OpenAPIObject {
   constructor(definition) {
     assertValidDefinition(definition, OpenAPIObject.schema);
 
+    this.document = definition;
     this.scope = Scope.register(this);
+    this.resolver = new Resolver(definition);
 
     this.owner = this;
-    this.document = definition;
     this.#definition = definition;
 
     this.name = toSnakePascalCase(definition.info.title);

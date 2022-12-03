@@ -1,6 +1,5 @@
 import { compile } from 'refless-json-schema-to-typescript';
 
-import ReferenceObject from '../../specifications/openapi/reference-object.mjs';
 import { MapWithUpsert } from '../../utils/objects.mjs';
 import parseTypescript from '../utils/parse-typescript.mjs';
 import rewriteTree from '../utils/rewrite-tree.mjs';
@@ -12,13 +11,11 @@ export default function generateSchemaObject(schemaObject) {
     compile(schemaObject.value, schemaObject.name, {
       bannerComment: '',
       resolveRef(schema) {
-        const { name, referencedObject } = ReferenceObject.retrieveObject(
-          schemaObject.document,
-          schema.$ref,
-        );
+        const { name, propertyPath, referencedObject } =
+          schemaObject.resolver.resolveObject(schema.$ref);
 
         safeIdentifiers.push(referencedObject.name);
-        return name;
+        return `${name}${propertyPath.join('')}`;
       },
       unknownAny: true,
     }),

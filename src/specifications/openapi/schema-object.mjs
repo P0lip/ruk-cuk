@@ -1,5 +1,5 @@
 import { registerSchema } from '../../validation/ajv.mjs';
-import BaseObject from './abstract/base-object.mjs';
+import BaseObject from '../shared/base-object.mjs';
 
 const SCHEMA = registerSchema({
   $id: 'ruk-cuk/schema-object',

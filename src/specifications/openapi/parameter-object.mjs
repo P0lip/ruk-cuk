@@ -2,7 +2,7 @@ import { isPlainObject } from '@stoplight/json';
 
 import { toPascalCase } from '../../utils/strings.mjs';
 import { registerSchema } from '../../validation/ajv.mjs';
-import BaseObject from './abstract/base-object.mjs';
+import BaseObject from '../shared/base-object.mjs';
 import SchemaObject from './schema-object.mjs';
 
 const SCHEMA = registerSchema({

@@ -1,5 +1,5 @@
 import { registerSchema } from '../../validation/ajv.mjs';
-import BaseObject from './abstract/base-object.mjs';
+import BaseObject from '../shared/base-object.mjs';
 import { MediaTypeObject } from './media-type-object.mjs';
 import ReferenceObject from './reference-object.mjs';
 

@@ -1,7 +1,7 @@
 import { resolveInlineRef } from '@stoplight/json';
 
 import { registerSchema } from '../../validation/ajv.mjs';
-import BaseObject from './abstract/base-object.mjs';
+import BaseObject from '../shared/base-object.mjs';
 import OperationObject from './operation-object.mjs';
 import ParameterObject from './parameter-object.mjs';
 import ReferenceObject from './reference-object.mjs';

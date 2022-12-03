@@ -1,5 +1,5 @@
 import { registerSchema } from '../../validation/ajv.mjs';
-import BaseObject from './abstract/base-object.mjs';
+import BaseObject from '../shared/base-object.mjs';
 import ParametersVirtualObject from './parameters-virtual-object.mjs';
 import ResponsesObject from './responses-object.mjs';
 
