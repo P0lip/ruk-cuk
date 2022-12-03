@@ -1,8 +1,8 @@
 import * as t from '@babel/types';
 import assert from 'node:assert';
 
-import ReferenceObject from '../../../openapi/reference-object.mjs';
-import SchemaObject from '../../../openapi/schema-object.mjs';
+import ReferenceObject from '../../../specifications/openapi/reference-object.mjs';
+import SchemaObject from '../../../specifications/openapi/schema-object.mjs';
 import generateReferenceObject from '../reference-object.mjs';
 import generateSchemaObject from '../schema-object.mjs';
 

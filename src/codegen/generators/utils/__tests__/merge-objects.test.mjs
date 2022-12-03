@@ -3,7 +3,7 @@ import * as t from '@babel/types';
 import chai from 'chai';
 import { beforeEach, describe, it } from 'mocha';
 
-import OpenAPIObject from '../../../../openapi/openapi-object.mjs';
+import OpenAPIObject from '../../../../specifications/openapi/openapi-object.mjs';
 import mergeObjects from '../merge-objects.mjs';
 
 const { expect } = chai;

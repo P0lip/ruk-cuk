@@ -1,4 +1,4 @@
-import { registerSchema } from '../validation/ajv.mjs';
+import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from './abstract/base-object.mjs';
 
 const SCHEMA = registerSchema({

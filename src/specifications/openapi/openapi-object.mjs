@@ -1,8 +1,11 @@
 import { isPlainObject } from '@stoplight/json';
 
-import Scope from '../codegen/scope.mjs';
-import { toSnakePascalCase } from '../utils/strings.mjs';
-import { assertValidDefinition, registerSchema } from '../validation/ajv.mjs';
+import Scope from '../../codegen/scope.mjs';
+import { toSnakePascalCase } from '../../utils/strings.mjs';
+import {
+  assertValidDefinition,
+  registerSchema,
+} from '../../validation/ajv.mjs';
 import ParameterObject from './parameter-object.mjs';
 import PathItemObject from './path-item-object.mjs';
 import RequestBodyObject from './request-body-object.mjs';

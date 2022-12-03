@@ -1,4 +1,4 @@
-import { assertValidDefinition } from '../../validation/ajv.mjs';
+import { assertValidDefinition } from '../../../validation/ajv.mjs';
 
 export default class BaseObject {
   #definition;

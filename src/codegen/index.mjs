@@ -1,8 +1,8 @@
-import ContentVirtualObject from '../openapi/content-virtual-object.mjs';
-import OpenAPIObject from '../openapi/openapi-object.mjs';
-import ParameterObject from '../openapi/parameter-object.mjs';
-import PathItemObject from '../openapi/path-item-object.mjs';
-import SchemaObject from '../openapi/schema-object.mjs';
+import ContentVirtualObject from '../specifications/openapi/content-virtual-object.mjs';
+import OpenAPIObject from '../specifications/openapi/openapi-object.mjs';
+import ParameterObject from '../specifications/openapi/parameter-object.mjs';
+import PathItemObject from '../specifications/openapi/path-item-object.mjs';
+import SchemaObject from '../specifications/openapi/schema-object.mjs';
 import Tree from './tree.mjs';
 
 export default function (definition, config) {

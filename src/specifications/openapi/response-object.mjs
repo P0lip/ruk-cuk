@@ -1,4 +1,4 @@
-import { registerSchema } from '../validation/ajv.mjs';
+import { registerSchema } from '../../validation/ajv.mjs';
 import ContentVirtualObject from './content-virtual-object.mjs';
 
 const SCHEMA = registerSchema({

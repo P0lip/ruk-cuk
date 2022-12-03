@@ -3,7 +3,7 @@ import * as t from '@babel/types';
 import chai from 'chai';
 import { describe, it } from 'mocha';
 
-import OpenAPIObject from '../../../openapi/openapi-object.mjs';
+import OpenAPIObject from '../../../specifications/openapi/openapi-object.mjs';
 import generateSchemaObject from '../schema-object.mjs';
 
 const { expect } = chai;

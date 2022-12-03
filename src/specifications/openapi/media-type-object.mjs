@@ -1,6 +1,6 @@
 import { isPlainObject, resolveInlineRef } from '@stoplight/json';
 
-import { registerSchema } from '../validation/ajv.mjs';
+import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from './abstract/base-object.mjs';
 import ReferenceObject from './reference-object.mjs';
 import SchemaObject from './schema-object.mjs';
