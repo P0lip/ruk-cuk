@@ -1,7 +1,7 @@
 // a simpler version of https://github.com/stoplightio/spectral/blob/develop/packages/ruleset-migrator/src/tree/scope.ts
 
 // todo: should add more from lib
-const REGISTERED_WORDS = ['Record', 'Required', 'Partial'];
+const REGISTERED_WORDS = ['Record', 'Required', 'Partial', 'Pick', 'Exclude'];
 
 export default class Scope {
   #uniqueIdentifiers;
@@ -42,8 +42,8 @@ export default class Scope {
   }
 
   store(object) {
-    if (!this.#aliases.has(object)) {
-      this.#aliases.set(object, this.generateUnique(object.name));
+    if (!this.#aliases.get(object)) {
+      this.#aliases.set(object, object.name);
     }
   }
 

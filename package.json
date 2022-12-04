@@ -62,14 +62,12 @@
   },
   "dependencies": {
     "@babel/generator": "^7.16.5",
-    "@babel/parser": "^7.16.6",
     "@babel/types": "^7.16.0",
     "@stoplight/json": "^3.17.1",
     "ajv": "^8.6.3",
     "chalk": "^5.0.0",
     "chokidar": "^3.5.2",
     "es-aggregate-error": "^1.0.7",
-    "refless-json-schema-to-typescript": "0.0.0",
     "yargs": "^17.3.0"
   }
 }

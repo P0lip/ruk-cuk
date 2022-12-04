@@ -1,5 +1,3 @@
-import { resolveInlineRef } from '@stoplight/json';
-
 import { capitalize } from '../../utils/strings.mjs';
 import BaseObject from '../shared/base-object.mjs';
 import ParameterObject from './parameter-object.mjs';
@@ -45,7 +43,9 @@ export default class ParametersVirtualObject extends BaseObject {
       return new ParameterObject(parameterObjectOrReferenceObject, this);
     } else if (!isSharedComponentRef(parameterObjectOrReferenceObject.$ref)) {
       return new ParameterObject(
-        resolveInlineRef(this.document, parameterObjectOrReferenceObject.$ref),
+        this.resolver.resolveDocumentFragment(
+          parameterObjectOrReferenceObject.$ref,
+        ),
         this,
       );
     } else {

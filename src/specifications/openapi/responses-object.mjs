@@ -51,7 +51,8 @@ export default class ResponsesObject extends BaseObject {
   constructor(definition, owner) {
     super(definition, owner);
 
-    this.name = `${capitalize(owner.name)}Response`;
+    this.name = this.scope.generateUnique(`${capitalize(owner.name)}Response`);
+    this.scope.store(this);
     this.#value = isPlainObject(definition)
       ? this.#getSuccessResponses(definition).filter(ResponsesObject.#hasBody)
       : [];

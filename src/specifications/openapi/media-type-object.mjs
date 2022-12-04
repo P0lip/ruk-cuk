@@ -1,4 +1,4 @@
-import { isPlainObject, resolveInlineRef } from '@stoplight/json';
+import { isPlainObject } from '@stoplight/json';
 
 import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from '../shared/base-object.mjs';
@@ -30,7 +30,7 @@ export class MediaTypeObject extends BaseObject {
       if (isSharedComponentRef(definition.$ref)) {
         return [new ReferenceObject(definition, owner)];
       } else {
-        definition = resolveInlineRef(owner.document, definition.$ref);
+        definition = owner.resolver.resolveDocumentFragment(definition.$ref);
       }
     }
 

@@ -47,6 +47,10 @@ export default class ParameterObject extends BaseObject {
     };
 
     this.schema = new SchemaObject(schema, this, this.name);
+
+    if (owner === this.root) {
+      this.resolver.store(definition, this);
+    }
   }
 
   static schema = SCHEMA;

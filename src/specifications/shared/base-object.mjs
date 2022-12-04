@@ -7,13 +7,6 @@ export default class BaseObject {
     BaseObject.#assertValidDefinition(definition, this);
 
     this.owner = owner;
-    this.resolver.store(definition, this);
-  }
-
-  static #store = new WeakMap();
-
-  static retrieveObject(definition) {
-    return BaseObject.#store.get(definition);
   }
 
   static #assertValidDefinition(definition, owner) {
@@ -42,9 +35,5 @@ export default class BaseObject {
 
   get resolver() {
     return this.root.resolver;
-  }
-
-  get document() {
-    return this.root.document;
   }
 }

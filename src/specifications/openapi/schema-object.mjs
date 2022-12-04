@@ -1,4 +1,5 @@
 import { registerSchema } from '../../validation/ajv.mjs';
+import JSONSchemaObject from '../json-schema/schema-object.mjs';
 import BaseObject from '../shared/base-object.mjs';
 
 const SCHEMA = registerSchema({
@@ -9,19 +10,23 @@ const SCHEMA = registerSchema({
 });
 
 export default class SchemaObject extends BaseObject {
-  constructor(definition, owner, name) {
-    super(definition, owner);
-
-    this.value = definition;
-    this.name = name;
-
-    this.scope.store(this);
-    this.name = this.scope.load(this);
-  }
+  #object;
 
   static schema = SCHEMA;
 
-  get isEmpty() {
-    return Object.keys(this.value).length === 0;
+  constructor(definition, owner, name) {
+    super(definition, owner);
+
+    this.name = name;
+    this.isEmpty = Object.keys(definition).length === 0;
+    this.#object = new JSONSchemaObject(definition, this, name);
+
+    if (owner === this.root) {
+      this.resolver.store(definition, this);
+    }
+  }
+
+  build() {
+    return this.#object.build();
   }
 }

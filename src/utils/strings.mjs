@@ -24,3 +24,14 @@ export function toPascalCase(input) {
 export function capitalize(input) {
   return isEmptyString(input) ? '' : input[0].toUpperCase() + input.slice(1);
 }
+
+export function prepareForBlockComment(input) {
+  return [
+    `*\n`,
+    ...input
+      .split('\n')
+      .map(item => (item.trim().length === 0 ? ' *' : ` * ${item}`))
+      .join('\n'),
+    `\n `,
+  ].join('');
+}

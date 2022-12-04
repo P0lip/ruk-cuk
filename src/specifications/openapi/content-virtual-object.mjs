@@ -36,6 +36,10 @@ export default class ContentVirtualObject extends BaseObject {
 
     this.name = name;
     this.objects = MediaTypeObject.createMediaTypeObjects(definition, this);
+
+    if (owner === this.root) {
+      this.resolver.store(definition, this);
+    }
   }
 
   static schema = SCHEMA;

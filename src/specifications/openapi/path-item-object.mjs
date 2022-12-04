@@ -1,5 +1,3 @@
-import { resolveInlineRef } from '@stoplight/json';
-
 import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from '../shared/base-object.mjs';
 import OperationObject from './operation-object.mjs';
@@ -67,7 +65,9 @@ export default class PathItemObject extends BaseObject {
       return new ParameterObject(parameterObjectOrReferenceObject, this);
     } else if (!isSharedComponentRef(parameterObjectOrReferenceObject.$ref)) {
       return new ParameterObject(
-        resolveInlineRef(this.document, parameterObjectOrReferenceObject.$ref),
+        this.resolver.resolveDocumentFragment(
+          parameterObjectOrReferenceObject.$ref,
+        ),
         this,
       );
     } else {

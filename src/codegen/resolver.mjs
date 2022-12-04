@@ -32,7 +32,7 @@ export default class Resolver {
         resolveInlineRef(this.#document, pathToPointer(path)),
       );
 
-      propertyPath.push(`['${path.pop()}']`);
+      propertyPath.push(String(path.pop()));
     } while (path.length > 0 && targetObject === void 0);
 
     propertyPath.pop();

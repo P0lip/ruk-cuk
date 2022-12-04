@@ -86,9 +86,7 @@ declare namespace Activity {
     [k: string]: unknown;
   };
   type ActivityType = "create" | "move" | "read" | "delete" | "update";
-  type BadRequestError = Error | {
-    [k: string]: unknown;
-  };
+  type BadRequestError = Error | Record<string, unknown>;
   type NotFoundError = Error;
   type UnauthorizedError = Error;
   type PaymentRequired = Error;
