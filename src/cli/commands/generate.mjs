@@ -56,7 +56,8 @@ export default {
         output: {
           alias: 'o',
           default: 'types.d.ts',
-          description: 'The name of the file to store definitions as',
+          description:
+            'The name of the file or full file path to store definitions as',
           type: 'string',
         },
         prettify: {
