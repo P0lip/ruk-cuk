@@ -1,31 +1,37 @@
+import { resolveInlineRef } from '@stoplight/json';
+
 import { capitalize } from '../utils/strings.mjs';
 import BaseObject from './abstract/base-object.mjs';
 import ParameterObject from './parameter-object.mjs';
 import ReferenceObject from './reference-object.mjs';
 import RequestBodyObject from './request-body-object.mjs';
+import { isSharedComponentRef } from './utils/refs.mjs';
 
 export default class ParametersVirtualObject extends BaseObject {
-  #value;
+  #parameters;
+  #requestBody;
 
   constructor(definition, owner) {
     super(definition, ['parameters'], owner);
 
     this.name = `${capitalize(owner.name)}Params`;
-    this.#value = [
-      ...[
-        ...owner.owner.parameters,
-        ...(definition.parameters?.map(this.#processParameter, this) ?? []),
-      ].filter(ParametersVirtualObject.#isRelevantParameter),
-      ...this.#extractRequestBody(definition),
+    this.#parameters = [
+      ...owner.owner.parameters,
+      ...(definition.parameters?.map(this.#processParameter, this) ?? []),
     ];
+
+    this.#requestBody = this.#extractRequestBody(definition);
   }
 
   get size() {
-    return this.#value.length;
+    return Array.from(this).length;
   }
 
   *[Symbol.iterator]() {
-    yield* this.#value;
+    yield* this.#parameters.filter(
+      ParametersVirtualObject.#isRelevantParameter,
+    );
+    yield* this.#requestBody;
   }
 
   #extractRequestBody(definition) {
@@ -37,15 +43,25 @@ export default class ParametersVirtualObject extends BaseObject {
 
   #processParameter(parameterObjectOrReferenceObject, i) {
     const subpath = ['parameters', String(i)];
-    if ('$ref' in parameterObjectOrReferenceObject) {
+    if (!('$ref' in parameterObjectOrReferenceObject)) {
+      return new ParameterObject(
+        parameterObjectOrReferenceObject,
+        subpath,
+        this,
+      );
+    } else if (!isSharedComponentRef(parameterObjectOrReferenceObject.$ref)) {
+      return new ParameterObject(
+        resolveInlineRef(this.document, parameterObjectOrReferenceObject.$ref),
+        subpath,
+        this,
+      );
+    } else {
       return new ReferenceObject(
         parameterObjectOrReferenceObject,
         subpath,
         this,
       );
     }
-
-    return new ParameterObject(parameterObjectOrReferenceObject, subpath, this);
   }
 
   static #isRelevantParameter(object) {

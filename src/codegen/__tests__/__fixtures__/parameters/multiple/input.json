@@ -4,6 +4,21 @@
     "title": "Pets"
   },
   "paths": {
+    "/v1/pets": {
+      "parameters": [
+        {
+          "$ref": "#/paths/~1v1~1pets~1{pet_id}~1state/get/parameters/0"
+        }
+      ],
+      "put": {
+        "operationId": "v1.petstore.createPet",
+        "parameters": [
+          {
+            "$ref": "#/paths/~1v1~1pets~1{pet_id}~1state/get/parameters/1"
+          }
+        ]
+      }
+    },
     "/v1/pets/{pet_id}/state": {
       "parameters": [
         {

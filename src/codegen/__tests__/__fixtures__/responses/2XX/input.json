@@ -4,6 +4,16 @@
     "title": "Pets"
   },
   "paths": {
+    "/v1/cat": {
+      "get": {
+        "operationId": "v1.petstore.getCat",
+        "responses": {
+          "2XX": {
+            "$ref": "#/paths/~1v1~1pet/get/responses/2XX"
+          }
+        }
+      }
+    },
     "/v1/pet": {
       "get": {
         "operationId": "v1.petstore.getPet",

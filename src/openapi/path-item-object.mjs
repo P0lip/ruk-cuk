@@ -1,8 +1,11 @@
+import { resolveInlineRef } from '@stoplight/json';
+
 import { registerSchema } from '../validation/ajv.mjs';
 import BaseObject from './abstract/base-object.mjs';
 import OperationObject from './operation-object.mjs';
 import ParameterObject from './parameter-object.mjs';
 import ReferenceObject from './reference-object.mjs';
+import { isSharedComponentRef } from './utils/refs.mjs';
 
 const HTTP_VERBS = [
   'get',
@@ -58,16 +61,27 @@ export default class PathItemObject extends BaseObject {
     return HTTP_VERBS.includes(key.toLowerCase());
   }
 
+  // todo: share with ParameterObject
   static #processParameter(parameterObjectOrReferenceObject, i) {
     const subpath = ['parameters', String(i)];
-    if ('$ref' in parameterObjectOrReferenceObject) {
+    if (!('$ref' in parameterObjectOrReferenceObject)) {
+      return new ParameterObject(
+        parameterObjectOrReferenceObject,
+        subpath,
+        this,
+      );
+    } else if (!isSharedComponentRef(parameterObjectOrReferenceObject.$ref)) {
+      return new ParameterObject(
+        resolveInlineRef(this.document, parameterObjectOrReferenceObject.$ref),
+        subpath,
+        this,
+      );
+    } else {
       return new ReferenceObject(
         parameterObjectOrReferenceObject,
         subpath,
         this,
       );
     }
-
-    return new ParameterObject(parameterObjectOrReferenceObject, subpath, this);
   }
 }

@@ -21,16 +21,28 @@ const SCHEMA = registerSchema({
 });
 
 export default class ReferenceObject extends BaseObject {
+  #_resolved;
+  #reference;
+
   constructor(definition, subpath, owner) {
     super(definition, subpath, owner);
 
-    const { name, referencedObject } = ReferenceObject.retrieveObject(
-      owner.document,
-      definition.$ref,
-    );
+    this.#reference = definition.$ref;
+  }
 
-    this.referencedObject = referencedObject;
-    this.name = name;
+  get #resolved() {
+    return (this.#_resolved ??= ReferenceObject.retrieveObject(
+      this.document,
+      this.#reference,
+    ));
+  }
+
+  get referencedObject() {
+    return this.#resolved.referencedObject;
+  }
+
+  get name() {
+    return this.#resolved.name;
   }
 
   static schema = SCHEMA;

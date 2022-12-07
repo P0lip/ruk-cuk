@@ -1,9 +1,10 @@
-import { isPlainObject } from '@stoplight/json';
+import { isPlainObject, resolveInlineRef } from '@stoplight/json';
 
 import { registerSchema } from '../validation/ajv.mjs';
 import BaseObject from './abstract/base-object.mjs';
 import ReferenceObject from './reference-object.mjs';
 import SchemaObject from './schema-object.mjs';
+import { isSharedComponentRef } from './utils/refs.mjs';
 
 const SCHEMA = registerSchema({
   $id: 'ruk-cuk/media-object',
@@ -30,7 +31,11 @@ export class MediaTypeObject extends BaseObject {
 
   static createMediaTypeObjects(definition, subpath, owner) {
     if ('$ref' in definition) {
-      return [new ReferenceObject(definition, [...subpath, '$ref'], owner)];
+      if (isSharedComponentRef(definition.$ref)) {
+        return [new ReferenceObject(definition, [...subpath, '$ref'], owner)];
+      } else {
+        definition = resolveInlineRef(owner.document, definition.$ref);
+      }
     }
 
     const mediaTypeObjects = [];
