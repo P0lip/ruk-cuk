@@ -3,70 +3,9 @@ import assert from 'node:assert';
 
 import ReferenceObject from '../../../specifications/openapi/reference-object.mjs';
 import SchemaObject from '../../../specifications/openapi/schema-object.mjs';
+import merge from '../../utils/merge.mjs';
 import generateReferenceObject from '../reference-object.mjs';
 import generateSchemaObject from '../schema-object.mjs';
-
-function pickName(node) {
-  if (node.key.type !== 'Identifier') {
-    throw new TypeError('Unmergeable object');
-  }
-
-  return node.key.name;
-}
-
-function mergeTypeLiterMembers(leftMembers, rightMembers) {
-  const keys = leftMembers.map(pickName);
-  for (const member of rightMembers) {
-    if (keys.includes(pickName(member))) {
-      throw new TypeError('Unmergeable object');
-    }
-  }
-
-  leftMembers.push(...rightMembers);
-}
-
-function dedupeNodes(node) {
-  if (node.type !== 'TSIntersectionType' && node.type !== 'TSUnionType') {
-    return node;
-  }
-
-  const seen = new Set();
-  let curTypeLiteralNode = null;
-
-  for (let i = 0; i < node.types.length; i++) {
-    const typeNode = node.types[i];
-    switch (typeNode.type) {
-      case 'TSTypeReference':
-        curTypeLiteralNode = null;
-        if (seen.has(typeNode.typeName.name)) {
-          node.types.splice(i, 1);
-          i--;
-        } else {
-          seen.add(typeNode.typeName.name);
-        }
-
-        break;
-      case 'TSTypeLiteral':
-        if (curTypeLiteralNode !== null) {
-          try {
-            mergeTypeLiterMembers(curTypeLiteralNode.members, typeNode.members);
-            node.types.splice(i, 1);
-            i--;
-          } catch {
-            curTypeLiteralNode = null;
-          }
-        } else {
-          curTypeLiteralNode = typeNode;
-        }
-
-        break;
-      default:
-        curTypeLiteralNode = null;
-    }
-  }
-
-  return node;
-}
 
 function tryToSchemaObject(object) {
   return 'schema' in object ? object.schema : object;
@@ -105,7 +44,7 @@ export default function mergeObjects(objects, strategy, name) {
   const merged = [
     intersectable.length === 1 ? intersectable[0] : t[strategy](intersectable),
     ...types,
-  ].map(dedupeNodes);
+  ].map(merge);
 
   return [
     t.tsTypeAliasDeclaration(t.identifier(name), null, merged[0]),
