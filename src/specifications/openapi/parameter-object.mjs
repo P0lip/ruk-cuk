@@ -6,7 +6,7 @@ import BaseObject from '../shared/base-object.mjs';
 import SchemaObject from './schema-object.mjs';
 
 const SCHEMA = registerSchema({
-  $id: 'ruk-cuk/parameter-object',
+  $id: 'ruk-cuk/openapi/parameter-object',
   $schema: 'http://json-schema.org/draft-07/schema#',
   properties: {
     in: {
@@ -40,18 +40,18 @@ export default class ParameterObject extends BaseObject {
       properties: {
         [definition.name]: isPlainObject(definition.schema)
           ? definition.schema
-          : {}, // could be true, but IIRC it's not supported by json-schema-to-typescript
+          : true,
       },
       required: definition.required === true ? [definition.name] : [],
       type: 'object',
     };
 
     this.schema = new SchemaObject(schema, this, this.name);
-
-    if (owner === this.root) {
-      this.resolver.store(definition, this);
-    }
   }
 
   static schema = SCHEMA;
+
+  build() {
+    return this.schema.build();
+  }
 }

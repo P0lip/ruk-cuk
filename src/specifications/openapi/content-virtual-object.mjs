@@ -1,10 +1,11 @@
+import combineNodes from '../../codegen/utils/combine-nodes.mjs';
 import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from '../shared/base-object.mjs';
+import JsonReferenceObject from '../shared/json-reference-object.mjs';
 import { MediaTypeObject } from './media-type-object.mjs';
-import ReferenceObject from './reference-object.mjs';
 
 const SCHEMA = registerSchema({
-  $id: 'ruk-cuk/content-virtual-object',
+  $id: 'ruk-cuk/openapi/content-virtual-object',
   oneOf: [
     {
       additionalProperties: false,
@@ -31,24 +32,31 @@ const SCHEMA = registerSchema({
 });
 
 export default class ContentVirtualObject extends BaseObject {
+  #objects;
+
   constructor(definition, owner, name) {
     super(definition, owner);
 
     this.name = name;
-    this.objects = MediaTypeObject.createMediaTypeObjects(definition, this);
-
-    if (owner === this.root) {
-      this.resolver.store(definition, this);
-    }
+    this.#objects = MediaTypeObject.createMediaTypeObjects(definition, this);
   }
 
   static schema = SCHEMA;
 
+  build() {
+    return combineNodes(
+      this.#objects.flatMap(object => object.build()),
+      'tsUnionType',
+      this.name,
+    );
+  }
+
   get hasNoSchema() {
     return (
-      this.objects.length === 0 ||
-      this.objects.every(
-        object => !(object instanceof ReferenceObject) && object.schema.isEmpty,
+      this.#objects.length === 0 ||
+      this.#objects.every(
+        object =>
+          !(object instanceof JsonReferenceObject) && object.schema.isEmpty,
       )
     );
   }

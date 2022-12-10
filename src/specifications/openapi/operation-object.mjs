@@ -1,3 +1,6 @@
+import * as t from '@babel/types';
+
+import { annotatedIdentifier } from '../../codegen/utils/builders.mjs';
 import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from '../shared/base-object.mjs';
 import ParametersVirtualObject from './parameters-virtual-object.mjs';
@@ -7,7 +10,7 @@ const ID_REGEXP =
   /^(?<namespace>v[0-9]\.[a-zA-Z_-]+)\.(?<action>[a-z][A-Za-z]*)$/;
 
 const SCHEMA = registerSchema({
-  $id: 'ruk-cuk/operation-object',
+  $id: 'ruk-cuk/openapi/operation-object',
   $schema: 'http://json-schema.org/draft-07/schema#',
   properties: {
     operationId: {
@@ -18,7 +21,7 @@ const SCHEMA = registerSchema({
       items: {
         oneOf: [
           { $ref: './parameter-object#' },
-          { $ref: './reference-object#' },
+          { $ref: '../json-reference-object#' },
         ],
       },
       type: 'array',
@@ -48,5 +51,36 @@ export default class OperationObject extends BaseObject {
 
   static #parseOperationId(id) {
     return ID_REGEXP.exec(id).groups;
+  }
+
+  build() {
+    return t.tsPropertySignature(
+      t.identifier(this.name),
+      t.tsTypeAnnotation(
+        t.tsFunctionType(
+          null,
+          this.parameters.size === 0
+            ? []
+            : [
+                annotatedIdentifier(
+                  'params',
+                  t.tsTypeAnnotation(
+                    t.tsTypeReference(t.identifier(this.parameters.name)),
+                  ),
+                ),
+              ],
+          t.tsTypeAnnotation(
+            t.tsTypeReference(
+              t.identifier('Promise'),
+              t.tsTypeParameterInstantiation([
+                this.responses.size === 0
+                  ? t.tsVoidKeyword()
+                  : t.tsTypeReference(t.identifier(this.responses.name)),
+              ]),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

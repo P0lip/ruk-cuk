@@ -1,5 +1,6 @@
 import * as assert from 'node:assert';
 
+import JsonReferenceObject from '../../shared/json-reference-object.mjs';
 import ArrayObject from '../array-object.mjs';
 import BooleanObject from '../boolean-object.mjs';
 import BooleanSchemaObject from '../boolean-schema-object.mjs';
@@ -7,7 +8,6 @@ import IntersectionObject from '../intersection-object.mjs';
 import NullObject from '../null-object.mjs';
 import NumericObject from '../numeric-object.mjs';
 import ObjectObject from '../object-object.mjs';
-import ReferenceObject from '../reference-object.mjs';
 import StringObject from '../string-object.mjs';
 import TupleObject from '../tuple-object.mjs';
 import UnionObject from '../union-type.mjs';
@@ -28,7 +28,7 @@ export default function assignObject(schema, owner) {
     case 'enum' in schema:
       return new UnionObject(schema, owner);
     case '$ref' in schema:
-      return new ReferenceObject(schema, owner);
+      return new JsonReferenceObject(schema, owner);
     default:
       return new BooleanSchemaObject(true);
   }

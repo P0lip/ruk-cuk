@@ -1,8 +1,8 @@
 import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from '../shared/base-object.mjs';
+import JsonReferenceObject from '../shared/json-reference-object.mjs';
 import OperationObject from './operation-object.mjs';
 import ParameterObject from './parameter-object.mjs';
-import ReferenceObject from './reference-object.mjs';
 import { isSharedComponentRef } from './utils/refs.mjs';
 
 const HTTP_VERBS = [
@@ -19,7 +19,7 @@ const HTTP_VERBS = [
 ];
 
 const SCHEMA = registerSchema({
-  $id: 'ruk-cuk/path-item-object',
+  $id: 'ruk-cuk/openapi/path-item-object',
   $schema: 'http://json-schema.org/draft-07/schema#',
   patternProperties: {
     [`^(${HTTP_VERBS.join('|')})$`]: {
@@ -31,7 +31,7 @@ const SCHEMA = registerSchema({
       items: {
         oneOf: [
           { $ref: './parameter-object#' },
-          { $ref: './reference-object#' },
+          { $ref: '../json-reference-object#' },
         ],
       },
       type: 'array',
@@ -71,7 +71,7 @@ export default class PathItemObject extends BaseObject {
         this,
       );
     } else {
-      return new ReferenceObject(parameterObjectOrReferenceObject, this);
+      return new JsonReferenceObject(parameterObjectOrReferenceObject, this);
     }
   }
 }

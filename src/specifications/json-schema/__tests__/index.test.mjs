@@ -1,5 +1,4 @@
 import generate from '@babel/generator';
-import * as t from '@babel/types';
 import chai from 'chai';
 import { describe, it } from 'mocha';
 
@@ -8,7 +7,7 @@ import SchemaObject from '../schema-object.mjs';
 const { expect } = chai;
 
 function print(object) {
-  return generate.default(t.program(object.build())).code;
+  return generate.default(object.build()).code;
 }
 
 describe('SchemaObject generator', () => {

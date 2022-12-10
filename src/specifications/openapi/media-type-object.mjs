@@ -2,12 +2,12 @@ import { isPlainObject } from '@stoplight/json';
 
 import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from '../shared/base-object.mjs';
-import ReferenceObject from './reference-object.mjs';
+import JsonReferenceObject from '../shared/json-reference-object.mjs';
 import SchemaObject from './schema-object.mjs';
 import { isSharedComponentRef } from './utils/refs.mjs';
 
 const SCHEMA = registerSchema({
-  $id: 'ruk-cuk/media-object',
+  $id: 'ruk-cuk/openapi/media-object',
   properties: {
     schema: {
       $ref: './schema-object#',
@@ -25,12 +25,19 @@ export class MediaTypeObject extends BaseObject {
 
   static schema = SCHEMA;
 
+  build() {
+    return this.schema.build();
+  }
+
   static createMediaTypeObjects(definition, owner) {
     if ('$ref' in definition) {
       if (isSharedComponentRef(definition.$ref)) {
-        return [new ReferenceObject(definition, owner)];
+        return [new JsonReferenceObject(definition, owner)];
       } else {
-        definition = owner.resolver.resolveDocumentFragment(definition.$ref);
+        return MediaTypeObject.createMediaTypeObjects(
+          owner.resolver.resolveDocumentFragment(definition.$ref),
+          owner,
+        );
       }
     }
 

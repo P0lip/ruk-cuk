@@ -1,10 +1,10 @@
 import * as t from '@babel/types';
 
 import { registerSchema } from '../../validation/ajv.mjs';
-import BaseObject from './shared/base-object.mjs';
+import BaseObject from '../json-schema/shared/base-object.mjs';
 
 const SCHEMA = registerSchema({
-  $id: 'ruk-cuk/json-schema/reference-object',
+  $id: 'ruk-cuk/json-reference-object',
   $schema: 'http://json-schema.org/draft-07/schema#',
   properties: {
     $ref: {
@@ -15,7 +15,7 @@ const SCHEMA = registerSchema({
   type: 'object',
 });
 
-export default class ReferenceObject extends BaseObject {
+export default class JsonReferenceObject extends BaseObject {
   #$ref;
 
   constructor(definition, owner) {
@@ -28,6 +28,10 @@ export default class ReferenceObject extends BaseObject {
 
   get resolved() {
     return this.root.resolver.resolveObject(this.#$ref);
+  }
+
+  get referencedObject() {
+    return this.resolved.referencedObject;
   }
 
   build() {

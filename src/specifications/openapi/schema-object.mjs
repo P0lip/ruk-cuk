@@ -3,7 +3,7 @@ import JSONSchemaObject from '../json-schema/schema-object.mjs';
 import BaseObject from '../shared/base-object.mjs';
 
 const SCHEMA = registerSchema({
-  $id: 'ruk-cuk/schema-object',
+  $id: 'ruk-cuk/openapi/schema-object',
   $schema: 'http://json-schema.org/draft-07/schema#',
   type: 'object',
   // we should probably use a meta-schema, but it may be too aggressive
@@ -20,10 +20,6 @@ export default class SchemaObject extends BaseObject {
     this.name = name;
     this.isEmpty = Object.keys(definition).length === 0;
     this.#object = new JSONSchemaObject(definition, this, name);
-
-    if (owner === this.root) {
-      this.resolver.store(definition, this);
-    }
   }
 
   build() {

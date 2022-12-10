@@ -2,7 +2,7 @@ import { registerSchema } from '../../validation/ajv.mjs';
 import ContentVirtualObject from './content-virtual-object.mjs';
 
 const SCHEMA = registerSchema({
-  $id: 'ruk-cuk/request-body-object',
+  $id: 'ruk-cuk/openapi/request-body-object',
   $schema: 'http://json-schema.org/draft-07/schema#',
   properties: {
     content: {

@@ -1,12 +1,13 @@
 import { isPlainObject } from '@stoplight/json';
 
+import combineNodes from '../../codegen/utils/combine-nodes.mjs';
 import { capitalize } from '../../utils/strings.mjs';
 import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from '../shared/base-object.mjs';
 import ResponseObject from './response-object.mjs';
 
 const SCHEMA = registerSchema({
-  $id: 'ruk-cuk/responses-object',
+  $id: 'ruk-cuk/openapi/responses-object',
   $schema: 'http://json-schema.org/draft-07/schema#',
   additionalProperties: {
     $ref: './response-object',
@@ -46,28 +47,34 @@ const SCHEMA = registerSchema({
 });
 
 export default class ResponsesObject extends BaseObject {
-  #value;
+  #objects;
 
   constructor(definition, owner) {
     super(definition, owner);
 
     this.name = this.scope.generateUnique(`${capitalize(owner.name)}Response`);
     this.scope.store(this);
-    this.#value = isPlainObject(definition)
-      ? this.#getSuccessResponses(definition).filter(ResponsesObject.#hasBody)
+    this.#objects = isPlainObject(definition)
+      ? this.#getSuccessResponses(definition)
       : [];
   }
 
   static schema = SCHEMA;
 
-  get size() {
-    return this.#value.length;
+  get #filteredObjects() {
+    return this.#objects.filter(ResponsesObject.#hasBody);
   }
 
-  *[Symbol.iterator]() {
-    for (const item of this.#value) {
-      yield* item.objects;
-    }
+  get size() {
+    return this.#filteredObjects.length;
+  }
+
+  build() {
+    return combineNodes(
+      this.#filteredObjects.flatMap(response => response.build()),
+      'tsUnionType',
+      this.name,
+    );
   }
 
   static #isSuccessResponse(code) {
@@ -82,17 +89,17 @@ export default class ResponsesObject extends BaseObject {
   #getSuccessResponses(responses) {
     const responseObjects = [];
     if ('2XX' in responses) {
-      responseObjects.push(new ResponseObject(responses['2XX'], this));
+      responseObjects.push(new ResponseObject(responses['2XX'], this, '2XX'));
     }
 
     if ('3XX' in responses) {
-      responseObjects.push(new ResponseObject(responses['3XX'], this));
+      responseObjects.push(new ResponseObject(responses['3XX'], this, '3XX'));
     }
 
     responseObjects.push(
       ...Object.keys(responses)
         .filter(ResponsesObject.#isSuccessResponse)
-        .map(code => new ResponseObject(responses[code], this)),
+        .map(code => new ResponseObject(responses[code], this, code)),
     );
 
     return responseObjects;

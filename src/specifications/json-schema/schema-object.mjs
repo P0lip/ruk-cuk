@@ -109,7 +109,7 @@ export default class JSONSchemaObject {
   }
 
   build() {
-    return [
+    return t.program([
       t.tsTypeAliasDeclaration(
         t.identifier(this.scope.load(this)),
         null,
@@ -122,6 +122,6 @@ export default class JSONSchemaObject {
           def.build(),
         ),
       ),
-    ];
+    ]);
   }
 }

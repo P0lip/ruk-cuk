@@ -1,10 +1,5 @@
 import * as t from '@babel/types';
 
-import generateContentVirtualObject from './generators/content-virtual-object.mjs';
-import generateOperationObject from './generators/operation-object.mjs';
-import generateParametersVirtualObject from './generators/parameters-virtual-object.mjs';
-import generateResponsesObject from './generators/responses-object.mjs';
-import generateSchemaObject from './generators/schema-object.mjs';
 import printTree from './utils/print-tree.mjs';
 
 const EVENTS_TYPE = t.tsTypeAliasDeclaration(
@@ -62,27 +57,20 @@ export default class Tree {
 
   addOperationObject(operationObject) {
     (this.#operations[operationObject.namespace] ??= []).push(
-      generateOperationObject(operationObject),
+      operationObject.build(),
     );
 
-    this.#moduleBlock.push(
-      ...generateParametersVirtualObject(operationObject.parameters),
-      ...generateResponsesObject(operationObject.responses),
-    );
+    this.addObject(operationObject.parameters);
+    this.addObject(operationObject.responses);
   }
 
-  addComponentsSchemaObject(schemaObject) {
-    this.#moduleBlock.push(...generateSchemaObject(schemaObject));
-  }
-
-  addComponentsParameterObject(parameterObject) {
-    this.#moduleBlock.push(...generateSchemaObject(parameterObject.schema));
-  }
-
-  addSharedContentVirtualObject(contentVirtualObject) {
-    this.#moduleBlock.push(
-      ...generateContentVirtualObject(contentVirtualObject),
-    );
+  addObject(object) {
+    const node = object.build();
+    if (node.type === 'Program') {
+      this.#moduleBlock.push(...node.body);
+    } else {
+      this.#moduleBlock.push(node);
+    }
   }
 
   toString() {

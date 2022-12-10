@@ -1,7 +1,8 @@
+import combineNodes from '../../codegen/utils/combine-nodes.mjs';
 import { capitalize } from '../../utils/strings.mjs';
 import BaseObject from '../shared/base-object.mjs';
+import JsonReferenceObject from '../shared/json-reference-object.mjs';
 import ParameterObject from './parameter-object.mjs';
-import ReferenceObject from './reference-object.mjs';
 import RequestBodyObject from './request-body-object.mjs';
 import { isSharedComponentRef } from './utils/refs.mjs';
 
@@ -21,21 +22,38 @@ export default class ParametersVirtualObject extends BaseObject {
     this.#requestBody = this.#extractRequestBody(definition);
   }
 
-  get size() {
-    return Array.from(this).length;
+  get #filteredObjects() {
+    const objects = this.#parameters.filter(
+      ParametersVirtualObject.#isRelevantParameter,
+    );
+
+    if (this.#requestBody !== null) {
+      objects.push(this.#requestBody);
+    }
+
+    return objects;
   }
 
   *[Symbol.iterator]() {
-    yield* this.#parameters.filter(
-      ParametersVirtualObject.#isRelevantParameter,
+    yield* this.#filteredObjects;
+  }
+
+  get size() {
+    return this.#filteredObjects.length;
+  }
+
+  build() {
+    return combineNodes(
+      this.#filteredObjects.map(object => object.build()),
+      'tsIntersectionType',
+      this.name,
     );
-    yield* this.#requestBody;
   }
 
   #extractRequestBody(definition) {
     return 'requestBody' in definition
-      ? new RequestBodyObject(definition.requestBody, this).objects
-      : [];
+      ? new RequestBodyObject(definition.requestBody, this, this.name)
+      : null;
   }
 
   #processParameter(parameterObjectOrReferenceObject) {
@@ -49,7 +67,7 @@ export default class ParametersVirtualObject extends BaseObject {
         this,
       );
     } else {
-      return new ReferenceObject(parameterObjectOrReferenceObject, this);
+      return new JsonReferenceObject(parameterObjectOrReferenceObject, this);
     }
   }
 
@@ -57,7 +75,7 @@ export default class ParametersVirtualObject extends BaseObject {
     switch (true) {
       case object instanceof RequestBodyObject:
         return true;
-      case object instanceof ReferenceObject:
+      case object instanceof JsonReferenceObject:
         return ParametersVirtualObject.#isRelevantParameter(
           object.referencedObject,
         );
