@@ -2,6 +2,7 @@ import * as t from '@babel/types';
 
 import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from '../json-schema/shared/base-object.mjs';
+import assignObject from '../json-schema/utils/assign-object.mjs';
 
 const SCHEMA = registerSchema({
   $id: 'ruk-cuk/json-reference-object',
@@ -26,29 +27,23 @@ export default class JsonReferenceObject extends BaseObject {
 
   static schema = SCHEMA;
 
-  get resolved() {
-    return this.root.resolver.resolveObject(this.#$ref);
-  }
-
   get referencedObject() {
-    return this.resolved.referencedObject;
+    try {
+      return this.resolver.resolveObject(this.#$ref);
+    } catch {
+      return null;
+    }
   }
 
   build() {
-    const { name, propertyPath } = this.resolved;
-
-    const object = t.tsTypeReference(t.identifier(name));
-
-    if (propertyPath.length === 0) {
-      return object;
+    const { referencedObject } = this;
+    if (referencedObject === null) {
+      return assignObject(
+        this.resolver.resolveDocumentFragment(this.#$ref),
+        this,
+      ).build();
     }
 
-    // todo: NonNullable
-    return propertyPath.reduce((objectType, key) => {
-      return t.tsIndexedAccessType(
-        objectType,
-        t.tsLiteralType(t.stringLiteral(key)),
-      );
-    }, object);
+    return t.tsTypeReference(t.identifier(referencedObject.name));
   }
 }

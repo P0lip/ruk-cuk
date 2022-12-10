@@ -5,7 +5,6 @@ export default class BaseObject {
 
   constructor(definition, owner) {
     BaseObject.#assertValidDefinition(definition, this);
-
     this.owner = owner;
   }
 

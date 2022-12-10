@@ -1,8 +1,4 @@
-import {
-  pathToPointer,
-  pointerToPath,
-  resolveInlineRef,
-} from '@stoplight/json';
+import { resolveInlineRef } from '@stoplight/json';
 import * as assert from 'node:assert';
 
 export default class Resolver {
@@ -23,30 +19,14 @@ export default class Resolver {
   }
 
   resolveObject($ref) {
-    const path = pointerToPath($ref);
-    const propertyPath = [];
-    let targetObject;
-
-    do {
-      targetObject = this.load(
-        resolveInlineRef(this.#document, pathToPointer(path)),
-      );
-
-      propertyPath.push(String(path.pop()));
-    } while (path.length > 0 && targetObject === void 0);
-
-    propertyPath.pop();
+    const targetObject = this.load(resolveInlineRef(this.#document, $ref));
 
     assert.ok(
       targetObject !== void 0,
       new ReferenceError(`Could not resolve $ref ${$ref}.`),
     );
 
-    return {
-      name: targetObject.name,
-      propertyPath: propertyPath.reverse(),
-      referencedObject: targetObject,
-    };
+    return targetObject;
   }
 
   store(definition, object) {
