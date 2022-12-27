@@ -1,23 +1,16 @@
+import StandaloneJSONSchemaObject from '../specifications/json-schema/standalone-schema-object.mjs';
 import OpenAPIObject from '../specifications/openapi/openapi-object.mjs';
-import PathItemObject from '../specifications/openapi/path-item-object.mjs';
-import Tree from './tree.mjs';
+import JSONSchemaTree from './json-schema-tree.mjs';
+import OpenAPITree from './openapi-tree.mjs';
 
 export default function (definition, config) {
-  const document = new OpenAPIObject(definition);
+  const document =
+    'openapi' in definition
+      ? new OpenAPIObject(definition, new OpenAPITree(config))
+      : new StandaloneJSONSchemaObject(definition, new JSONSchemaTree(config));
+
   try {
-    const tree = new Tree(document, config);
-
-    for (const object of document) {
-      if (object instanceof PathItemObject) {
-        for (const operationObject of object.operations) {
-          tree.addOperationObject(operationObject);
-        }
-      } else {
-        tree.addObject(object);
-      }
-    }
-
-    return String(tree);
+    return String(document);
   } finally {
     document.dispose();
   }

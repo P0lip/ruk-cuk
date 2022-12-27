@@ -52,6 +52,6 @@ export default class ParameterObject extends BaseObject {
   static schema = SCHEMA;
 
   build() {
-    return this.schema.build();
+    return BaseObject.build(this.schema);
   }
 }

@@ -1,8 +1,8 @@
 import * as t from '@babel/types';
 
 import { registerSchema } from '../../validation/ajv.mjs';
-import BaseObject from '../json-schema/shared/base-object.mjs';
-import assignObject from '../json-schema/utils/assign-object.mjs';
+import assignObject from '../json-schema/schema-utils/assign-object.mjs';
+import BaseObject from './base-object.mjs';
 
 const SCHEMA = registerSchema({
   $id: 'ruk-cuk/json-reference-object',

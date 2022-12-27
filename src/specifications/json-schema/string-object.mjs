@@ -30,6 +30,8 @@ const SCHEMA = registerSchema({
 export default class StringObject extends BaseObject {
   static schema = SCHEMA;
 
+  static keywords = Object.keys(SCHEMA.properties);
+
   build() {
     return t.tsStringKeyword();
   }

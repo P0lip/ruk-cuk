@@ -44,7 +44,7 @@ export default class ParametersVirtualObject extends BaseObject {
 
   build() {
     return combineNodes(
-      this.#filteredObjects.map(object => object.build()),
+      this.#filteredObjects.map(BaseObject.build),
       'tsIntersectionType',
       this.name,
     );

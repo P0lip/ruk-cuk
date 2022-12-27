@@ -23,6 +23,6 @@ export default class SchemaObject extends BaseObject {
   }
 
   build() {
-    return this.#object.build();
+    return BaseObject.build(this.#object);
   }
 }

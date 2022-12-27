@@ -44,6 +44,7 @@
     "prepublishOnly": "npm run lint && npm run test"
   },
   "devDependencies": {
+    "@babel/parser": "^7.20.7",
     "@ls-lint/ls-lint": "^1.10.0",
     "@types/yargs": "^17.0.7",
     "c8": "^7.8.0",

@@ -33,11 +33,7 @@ const SCHEMA = registerSchema({
 export default class NumericObject extends BaseObject {
   static schema = SCHEMA;
 
-  constructor(definition, owner) {
-    super(definition, owner);
-
-    this.description = definition.description ?? null;
-  }
+  static keywords = Object.keys(SCHEMA.properties);
 
   build() {
     return t.tsNumberKeyword();

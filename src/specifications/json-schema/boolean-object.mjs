@@ -18,6 +18,8 @@ const SCHEMA = registerSchema({
 export default class BooleanObject extends BaseObject {
   static schema = SCHEMA;
 
+  static keywords = Object.keys(SCHEMA.properties);
+
   build() {
     return t.tsBooleanKeyword();
   }

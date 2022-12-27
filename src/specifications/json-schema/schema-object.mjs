@@ -1,13 +1,9 @@
 import * as t from '@babel/types';
 
-import Resolver from '../../codegen/resolver.mjs';
-import Scope from '../../codegen/scope.mjs';
 import { capitalize, toSnakePascalCase } from '../../utils/strings.mjs';
-import {
-  assertValidDefinition,
-  registerSchema,
-} from '../../validation/ajv.mjs';
-import assignObject from './utils/assign-object.mjs';
+import { registerSchema } from '../../validation/ajv.mjs';
+import BaseObject from '../shared/base-object.mjs';
+import assignObject from './schema-utils/assign-object.mjs';
 
 const SCHEMA = registerSchema({
   $defs: {
@@ -70,21 +66,15 @@ const SCHEMA = registerSchema({
   ],
 });
 
-export default class JSONSchemaObject {
+export default class JSONSchemaObject extends BaseObject {
   #rootSchema;
   #defs;
 
-  constructor(definition, owner, name = definition.title) {
-    assertValidDefinition(definition, JSONSchemaObject.schema);
+  constructor(definition, owner, name = definition.title ?? 'Model') {
+    super(definition, owner);
 
     this.definition = definition;
-    this.scope = owner?.scope ?? Scope.register(this);
-    this.resolver = owner?.resolver ?? new Resolver(definition);
-    // this.$draft = 'draft-7';
     this.context = owner?.context ?? 'readWrite';
-
-    this.owner = this;
-
     this.name = this.scope.generateUnique(toSnakePascalCase(name));
     this.scope.store(this);
 
@@ -103,10 +93,6 @@ export default class JSONSchemaObject {
   }
 
   static schema = SCHEMA;
-
-  dispose() {
-    Scope.unregister(this);
-  }
 
   build() {
     return t.program([

@@ -42,10 +42,12 @@ const SCHEMA = registerSchema({
 export default class OpenAPIObject {
   #definition;
 
-  constructor(definition) {
+  constructor(definition, tree) {
     assertValidDefinition(definition, OpenAPIObject.schema);
 
     this.document = definition;
+    this.tree = tree;
+    this.cache = new Map();
     this.scope = Scope.register(this);
     this.resolver = new Resolver(definition);
 
@@ -53,6 +55,7 @@ export default class OpenAPIObject {
     this.#definition = definition;
 
     this.name = toSnakePascalCase(definition.info.title);
+    this.tree.name = this.name;
 
     this.components = new ComponentsObject(definition.components ?? {}, this);
     this.pathItems = this.#getPathItemObjects();
@@ -61,6 +64,7 @@ export default class OpenAPIObject {
   static schema = SCHEMA;
 
   dispose() {
+    this.cache.clear();
     Scope.unregister(this);
   }
 
@@ -74,8 +78,23 @@ export default class OpenAPIObject {
     return pathItems;
   }
 
-  *[Symbol.iterator]() {
-    yield* this.pathItems.values();
-    yield this.components;
+  build() {
+    const nodes = [...this.pathItems.values(), this.components];
+
+    for (const object of nodes) {
+      if (object instanceof PathItemObject) {
+        for (const operationObject of object.operations) {
+          this.tree.addOperationObject(operationObject);
+        }
+      } else {
+        this.tree.addObject(object);
+      }
+    }
+  }
+
+  toString() {
+    this.build();
+
+    return this.tree.toString();
   }
 }

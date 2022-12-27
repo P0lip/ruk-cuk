@@ -45,8 +45,9 @@ describe('Codegen', () => {
 
   it('supports header and footer', () => {
     const input = {
+      openapi: '3.1.0',
       info: {
-        title: 'title',
+        title: 'My API',
       },
       paths: {},
       components: {},
@@ -60,7 +61,7 @@ describe('Codegen', () => {
         skipEvents: false,
       }).trim(),
     ).to.eq(`// I am a header!
-declare namespace Title {
+declare namespace My_API {
   type Actions = {};
   type Events = never;
 }

@@ -26,7 +26,7 @@ export class MediaTypeObject extends BaseObject {
   static schema = SCHEMA;
 
   build() {
-    return this.schema.build();
+    return BaseObject.build(this.schema);
   }
 
   static createMediaTypeObjects(definition, owner) {

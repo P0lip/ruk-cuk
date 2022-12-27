@@ -1,8 +1,8 @@
 import * as t from '@babel/types';
 
 import { registerSchema } from '../../validation/ajv.mjs';
+import assignObject from './schema-utils/assign-object.mjs';
 import BaseObject from './shared/base-object.mjs';
-import assignObject from './utils/assign-object.mjs';
 
 const SCHEMA = registerSchema({
   $id: 'ruk-cuk/json-schema-draft-7/tuple-object',
@@ -31,6 +31,6 @@ export default class TupleObject extends BaseObject {
   static schema = SCHEMA;
 
   build() {
-    return t.tsTupleType(this.#objects.map(object => object.build()));
+    return t.tsTupleType(this.#objects.map(BaseObject.build));
   }
 }

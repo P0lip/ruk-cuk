@@ -71,7 +71,7 @@ export default class ResponsesObject extends BaseObject {
 
   build() {
     return combineNodes(
-      this.#filteredObjects.flatMap(response => response.build()),
+      this.#filteredObjects.flatMap(BaseObject.build),
       'tsUnionType',
       this.name,
     );

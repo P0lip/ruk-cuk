@@ -1,26 +1,16 @@
-// prefixItems
-// items
-// unevaluatedItems
-
 import * as t from '@babel/types';
 
 import { registerSchema } from '../../validation/ajv.mjs';
+import assignObject from './schema-utils/assign-object.mjs';
 import BaseObject from './shared/base-object.mjs';
-import assignObject from './utils/assign-object.mjs';
+import UnknownObject from './unknown-object.mjs';
 
 const SCHEMA = registerSchema({
-  $id: 'ruk-cuk/json-schema-draft-7/array-object',
+  $id: 'ruk-cuk/json-schema/array-object',
   $schema: 'http://json-schema.org/draft-07/schema#',
   properties: {
     items: {
-      oneOf: [
-        {
-          type: 'object',
-        },
-        {
-          type: 'boolean',
-        },
-      ],
+      $ref: '../json-schema',
     },
     maxItems: {
       type: 'number',
@@ -39,25 +29,63 @@ const SCHEMA = registerSchema({
 export default class ArrayObject extends BaseObject {
   #object;
   #minItems;
+  #maxItems;
 
   constructor(definition, owner) {
     super(definition, owner);
 
-    this.#object = assignObject(definition.items, this);
-    this.#minItems = definition.minItems ?? 0;
+    this.#object =
+      definition.items !== void 0
+        ? assignObject(definition.items, this)
+        : new UnknownObject(definition, this);
+    this.#minItems = definition.minItems;
+    this.#maxItems = definition.maxItems;
   }
 
   static schema = SCHEMA;
 
-  build() {
-    const object = this.#object.build();
-    if (this.#minItems > 0) {
-      return t.tsTupleType([
-        ...new Array(this.#minItems).fill(object),
-        t.tsRestType(t.tsArrayType(object)),
-      ]);
+  static keywords = Object.keys(SCHEMA.properties);
+
+  #buildRange(minItems, maxItems) {
+    if (minItems > maxItems) {
+      return t.tsNeverKeyword();
     }
 
-    return t.tsArrayType(object);
+    if (minItems === maxItems) {
+      const hoistedObject = BaseObject.buildHoistedObject(this.#object);
+      return t.tsTupleType([...new Array(minItems).fill(hoistedObject)]);
+    }
+
+    return t.tsTypeReference(
+      t.tsQualifiedName(
+        t.identifier('RukCukTypeHelpers'),
+        t.identifier('ArrayRange'),
+      ),
+      t.tsTypeParameterInstantiation([
+        BaseObject.build(this.#object),
+        t.tsLiteralType(t.numericLiteral(minItems)),
+        t.tsLiteralType(t.numericLiteral(maxItems)),
+      ]),
+    );
+  }
+
+  build() {
+    if (this.#minItems !== void 0 && this.#maxItems !== void 0) {
+      return this.#buildRange(this.#minItems, this.#maxItems);
+    }
+
+    if (this.#minItems > 0) {
+      const hoistedObject = BaseObject.buildHoistedObject(this.#object);
+      return t.tsTupleType([
+        ...new Array(this.#minItems).fill(hoistedObject),
+        t.tsRestType(t.tsArrayType(hoistedObject)),
+      ]);
+    } else if (this.#maxItems === 0) {
+      return t.tsTupleType([]);
+    } else if (this.#maxItems >= 1) {
+      return this.#buildRange(0, this.#maxItems);
+    }
+
+    return t.tsArrayType(this.#object.build());
   }
 }

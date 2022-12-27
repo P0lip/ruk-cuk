@@ -45,7 +45,7 @@ export default class ContentVirtualObject extends BaseObject {
 
   build() {
     return combineNodes(
-      this.#objects.flatMap(object => object.build()),
+      this.#objects.flatMap(BaseObject.build),
       'tsUnionType',
       this.name,
     );

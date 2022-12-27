@@ -2,85 +2,44 @@ import * as t from '@babel/types';
 
 import printTree from './utils/print-tree.mjs';
 
-const EVENTS_TYPE = t.tsTypeAliasDeclaration(
-  t.identifier('Events'),
-  null,
-  t.tsNeverKeyword(),
-);
-
 export default class Tree {
-  #root;
-  #operations = {};
-  #moduleBlock;
-  #actions = [];
+  nodes = [];
+
+  #hoisted = new WeakMap();
   #header;
   #footer;
 
-  constructor(document, config) {
+  constructor(config = {}) {
+    this.config = config;
     this.#header = config.header ?? '';
     this.#footer = config.footer ?? '';
-
-    this.#moduleBlock = [
-      Tree.#generateActionAliasDeclaration(this.#actions),
-      ...(config.skipEvents ? [] : [EVENTS_TYPE]),
-    ].filter(Boolean);
-
-    this.#root = Tree.#generateModuleDeclaration(
-      `${config.namespacePrefix}${document.name}`,
-      this.#moduleBlock,
-    );
   }
 
-  static #generateActionAliasDeclaration(actions) {
-    return t.tsTypeAliasDeclaration(
-      t.identifier('Actions'),
-      null,
-      t.tsTypeLiteral(actions),
-    );
+  hoist(name, node) {
+    let hoisted = this.#hoisted.get(node);
+    if (hoisted === void 0) {
+      const identifier = t.identifier(name);
+      this.addNode(t.tsTypeAliasDeclaration(identifier, null, node));
+      hoisted = t.tsTypeReference(identifier);
+      this.#hoisted.set(node, hoisted);
+    }
+
+    return hoisted;
   }
 
-  static #generateModuleDeclaration(name, body) {
-    const moduleDeclaration = t.tsModuleDeclaration(
-      t.identifier(name),
-      t.tsModuleBlock(body),
-    );
-    moduleDeclaration.declare = true;
-    return moduleDeclaration;
-  }
-
-  static #generateOperationPropertySignature([namespace, operations]) {
-    return t.tsPropertySignature(
-      t.stringLiteral(namespace),
-      t.tsTypeAnnotation(t.tsTypeLiteral(operations)),
-    );
-  }
-
-  addOperationObject(operationObject) {
-    (this.#operations[operationObject.namespace] ??= []).push(
-      operationObject.build(),
-    );
-
-    this.addObject(operationObject.parameters);
-    this.addObject(operationObject.responses);
-  }
-
-  addObject(object) {
-    const node = object.build();
+  addNode(node) {
     if (node.type === 'Program') {
-      this.#moduleBlock.push(...node.body);
+      this.nodes.push(...node.body);
     } else {
-      this.#moduleBlock.push(node);
+      this.nodes.push(node);
     }
   }
 
-  toString() {
-    this.#actions.length = 0;
-    this.#actions.push(
-      ...Object.entries(this.#operations).map(
-        Tree.#generateOperationPropertySignature,
-      ),
-    );
+  addObject(object) {
+    this.addNode(object.build());
+  }
 
-    return [this.#header, printTree(this.#root), this.#footer].join('\n');
+  toString() {
+    return [this.#header, printTree(this.root), this.#footer].join('\n').trim();
   }
 }

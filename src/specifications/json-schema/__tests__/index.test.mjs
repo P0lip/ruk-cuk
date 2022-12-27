@@ -1,13 +1,19 @@
-import generate from '@babel/generator';
 import chai from 'chai';
 import { describe, it } from 'mocha';
 
-import SchemaObject from '../schema-object.mjs';
+import JSONSchemaTree from '../../../codegen/json-schema-tree.mjs';
+import StandaloneJSONSchemaObject from '../standalone-schema-object.mjs';
 
 const { expect } = chai;
 
-function print(object) {
-  return generate.default(object.build()).code;
+function print(document) {
+  return String(
+    new StandaloneJSONSchemaObject(
+      document,
+      new JSONSchemaTree(document),
+      document.title ?? 'Model',
+    ),
+  );
 }
 
 describe('SchemaObject generator', () => {
@@ -16,9 +22,93 @@ describe('SchemaObject generator', () => {
       type: 'string',
     };
 
-    const object = new SchemaObject(document, null, 'Identifier');
+    expect(print(document)).to.eq(`type Model = string;`);
+  });
 
-    expect(print(object)).to.eq(`type Identifier = string;`);
+  it('handles type placed alongside a oneOf', () => {
+    const document = {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'string',
+        },
+      },
+      oneOf: [
+        {
+          type: 'object',
+          properties: {
+            length: {
+              type: 'number',
+            },
+          },
+          required: ['length'],
+        },
+        {
+          type: 'object',
+          properties: {
+            size: {
+              type: 'number',
+            },
+          },
+          required: ['size'],
+        },
+      ],
+    };
+
+    expect(print(document)).to.eq(`type Model = {
+  id?: string;
+  [k: string]: unknown;
+} & ({
+  length: number;
+  [k: string]: unknown;
+} | {
+  size: number;
+  [k: string]: unknown;
+});`);
+  });
+
+  it('implicit types', () => {
+    const document = {
+      type: 'object',
+      oneOf: [
+        {
+          additionalProperties: false,
+          properties: {
+            kind: {
+              const: 'user',
+            },
+            traits: {
+              properties: {
+                name: {
+                  type: 'string',
+                },
+              },
+              additionalProperties: false,
+            },
+          },
+          required: ['kind'],
+        },
+        {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            kind: {
+              const: 'guest',
+            },
+          },
+          required: ['kind'],
+        },
+      ],
+    };
+
+    expect(print(document)).to.eq(`type Model = {
+  kind: "user";
+  traits?: {
+    name?: string;
+  };
+} | {
+  kind: "guest";
+};`);
   });
 
   it('golden', () => {
@@ -39,9 +129,7 @@ describe('SchemaObject generator', () => {
             true,
             {
               type: 'object',
-              properties: {
-                // a: true,
-              },
+              properties: {},
             },
           ],
         },
@@ -52,9 +140,7 @@ describe('SchemaObject generator', () => {
       type: 'object',
     };
 
-    const object = new SchemaObject(document, null, 'Schema');
-
-    expect(print(object)).to.eq(`type Schema = {
+    expect(print(document)).to.eq(`type Model = {
   a?: string;
   b: [number, number | string, unknown, Record<string, unknown>];
   c?: never;
@@ -65,7 +151,7 @@ describe('SchemaObject generator', () => {
 
   it('handles plain objects', () => {
     const document = {
-      title: 'Something else',
+      title: 'User',
       type: 'object',
       properties: {
         id: {
@@ -74,9 +160,7 @@ describe('SchemaObject generator', () => {
       },
     };
 
-    const object = new SchemaObject(document, null, 'User');
-
-    expect(print(object)).to.eq(`type User = {
+    expect(print(document)).to.eq(`type User = {
   id?: number;
   [k: string]: unknown;
 };`);
@@ -84,6 +168,7 @@ describe('SchemaObject generator', () => {
 
   it('handles arrays', () => {
     const document = {
+      title: 'Users',
       type: 'array',
       items: {
         $ref: '#/$defs/User',
@@ -102,9 +187,7 @@ describe('SchemaObject generator', () => {
       },
     };
 
-    const object = new SchemaObject(document, null, 'Users');
-
-    expect(print(object)).to.eq(`type Users = Users_User[];
+    expect(print(document)).to.eq(`type Users = Users_User[];
 type Users_User = {
   id: number;
 };`);
@@ -112,7 +195,7 @@ type Users_User = {
 
   it('handles $refs pointing at unmapped areas', () => {
     const document = {
-      title: 'Something else',
+      title: 'Users',
       type: 'array',
       items: {
         oneOf: [
@@ -150,10 +233,8 @@ type Users_User = {
       },
     };
 
-    const object = new SchemaObject(document, null, 'User');
-
-    expect(print(object)).to.eq(`type User = (string | number)[];
-type User_User = {
+    expect(print(document)).to.eq(`type Users = (string | number)[];
+type Users_User = {
   id: string;
 };`);
   });
@@ -175,9 +256,7 @@ type User_User = {
       additionalProperties: false,
     };
 
-    const object = new SchemaObject(document, null, 'User');
-
-    expect(print(object)).to.eq(`type User = {
+    expect(print(document)).to.eq(`type Model = {
   /**
    * Unique identifier
    */
@@ -217,10 +296,8 @@ type User_User = {
       ],
     };
 
-    const object = new SchemaObject(document, null, 'Dictionary');
-
-    expect(print(object)).to.eq(
-      `type Dictionary = Record<string, unknown> | Record<string, number> | Record<string, {
+    expect(print(document)).to.eq(
+      `type Model = Record<string, unknown> | Record<string, number> | Record<string, {
   test?: string;
 }>;`,
     );
