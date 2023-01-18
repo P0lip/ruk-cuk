@@ -1,5 +1,6 @@
-import Ajv from 'ajv';
 import * as assert from 'node:assert';
+
+import Ajv from 'ajv';
 
 const ajv = new Ajv({ strict: true });
 

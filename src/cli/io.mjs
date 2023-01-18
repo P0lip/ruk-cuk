@@ -1,7 +1,8 @@
-import chalk from 'chalk';
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import * as process from 'node:process';
+
+import chalk from 'chalk';
 
 export async function* readAll(filepaths) {
   for (const filepath of filepaths) {

@@ -1,5 +1,6 @@
-import * as t from '@babel/types';
 import * as assert from 'node:assert';
+
+import * as t from '@babel/types';
 
 import merge from './merge.mjs';
 

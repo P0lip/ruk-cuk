@@ -1,5 +1,6 @@
-import chalk from 'chalk';
 import process from 'node:process';
+
+import chalk from 'chalk';
 import prettier from 'prettier';
 
 import loadConfig from '#config/load';

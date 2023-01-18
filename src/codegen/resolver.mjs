@@ -1,5 +1,6 @@
-import { resolveInlineRef } from '@stoplight/json';
 import * as assert from 'node:assert';
+
+import { resolveInlineRef } from '@stoplight/json';
 
 export default class Resolver {
   #document;

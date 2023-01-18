@@ -1,9 +1,10 @@
-import chai from 'chai';
-import { describe, it } from 'mocha';
-import forEach from 'mocha-each';
 import { promises as fs } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import chai from 'chai';
+import { describe, it } from 'mocha';
+import forEach from 'mocha-each';
 
 import generate from '../index.mjs';
 
