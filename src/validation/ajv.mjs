@@ -1,5 +1,4 @@
 import Ajv from 'ajv';
-import AggregateError from 'es-aggregate-error';
 import * as assert from 'node:assert';
 
 const ajv = new Ajv({ strict: true });
