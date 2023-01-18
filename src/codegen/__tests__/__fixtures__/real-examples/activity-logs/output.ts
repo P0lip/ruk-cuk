@@ -10,6 +10,10 @@ declare namespace Activity {
     workspace_id: string;
     before?: string;
     after?: string;
+
+    /**
+     * @defaultValue `50`
+     */
     limit?: number;
     type?: ActivityType[];
     group?: string;

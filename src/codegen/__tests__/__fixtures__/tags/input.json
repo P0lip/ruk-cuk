@@ -1,0 +1,63 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Pets"
+  },
+  "paths": {
+    "/v1/pet": {
+      "get": {
+        "operationId": "v1.petstore.getPet",
+        "responses": {
+          "2XX": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pet"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Pet": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "kind": {
+            "enum": ["Dog", "Cat"],
+            "default": "Dog"
+          },
+          "species": {
+            "type": "string",
+            "deprecated": true
+          },
+          "population": {
+            "type": "integer",
+            "default": 0
+          },
+          "continents": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": ["Europe", "Asia", "Africa"]
+          },
+          "x-foo": {
+            "description": "This is a custom property used internally",
+            "type": "string",
+            "deprecated": true,
+            "x-internal": true
+          }
+        }
+      }
+    }
+  }
+}

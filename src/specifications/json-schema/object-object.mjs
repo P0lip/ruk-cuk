@@ -82,16 +82,9 @@ export default class ObjectObject extends BaseObject {
       );
       prop.optional = !required;
 
-      if (
-        'description' in value &&
-        value.description !== null &&
-        value.description.length > 0
-      ) {
-        t.addComment(
-          prop,
-          'leading',
-          prepareForBlockComment(value.description.trim()),
-        );
+      const { tsDocBlock } = value;
+      if (tsDocBlock !== void 0 && tsDocBlock.length > 0) {
+        t.addComment(prop, 'leading', prepareForBlockComment(tsDocBlock));
       }
 
       return prop;
