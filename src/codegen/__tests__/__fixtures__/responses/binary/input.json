@@ -1,0 +1,43 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Files API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/v1/images": {
+      "get": {
+        "operationId": "v1.images.getImages",
+        "responses": {
+          "2XX": {
+            "content": {
+              "image/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/images/{id}": {
+      "get": {
+        "operationId": "v1.images.getImage",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "contentEncoding": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

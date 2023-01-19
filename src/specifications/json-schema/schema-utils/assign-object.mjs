@@ -1,3 +1,4 @@
+import BinaryObject from '../../shared/binary-object.mjs';
 import JsonReferenceObject from '../../shared/json-reference-object.mjs';
 import ArrayObject from '../array-object.mjs';
 import BooleanObject from '../boolean-object.mjs';
@@ -68,6 +69,10 @@ export default function (schema, owner) {
 }
 
 function assignTypeObject(schema, owner) {
+  if (schema.format === 'binary' || schema.contentEncoding === 'binary') {
+    return new BinaryObject(schema, owner);
+  }
+
   switch (schema.type) {
     case 'number':
     case 'integer':
