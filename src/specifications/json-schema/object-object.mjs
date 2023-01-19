@@ -21,7 +21,15 @@ const SCHEMA = registerSchema({
       type: 'object',
     },
     propertyNames: {
-      type: 'string',
+      properties: {
+        pattern: {
+          type: 'string',
+        },
+        type: {
+          const: 'string',
+        },
+      },
+      type: 'object',
     },
     required: {
       items: {
