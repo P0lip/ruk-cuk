@@ -34,10 +34,6 @@ export default class ParametersVirtualObject extends BaseObject {
     return objects;
   }
 
-  *[Symbol.iterator]() {
-    yield* this.#filteredObjects;
-  }
-
   get size() {
     return this.#filteredObjects.length;
   }

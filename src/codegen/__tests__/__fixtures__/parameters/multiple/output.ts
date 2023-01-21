@@ -14,6 +14,7 @@ declare namespace Pets {
   type GetStateParams = PetId & {
     size: "s" | "m" | "l";
     kind?: string;
+    "X-Request-ID"?: unknown;
   };
   type UpdateStateParams = PetId;
   type PetId = {

@@ -28,6 +28,8 @@ const SCHEMA = registerSchema({
 });
 
 export default class ParameterObject extends BaseObject {
+  #object;
+
   constructor(definition, owner) {
     super(definition, owner);
 
@@ -46,12 +48,12 @@ export default class ParameterObject extends BaseObject {
       type: 'object',
     };
 
-    this.schema = new SchemaObject(schema, this, this.name);
+    this.#object = new SchemaObject(schema, this, this.name);
   }
 
   static schema = SCHEMA;
 
   build() {
-    return BaseObject.build(this.schema);
+    return BaseObject.build(this.#object);
   }
 }
