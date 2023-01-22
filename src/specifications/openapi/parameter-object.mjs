@@ -41,8 +41,15 @@ export default class ParameterObject extends BaseObject {
       id: definition.name,
       properties: {
         [definition.name]: isPlainObject(definition.schema)
-          ? definition.schema
-          : true,
+          ? {
+              deprecated: definition.deprecated,
+              description: definition.description,
+              ...definition.schema,
+            }
+          : {
+              deprecated: definition.deprecated,
+              description: definition.description,
+            },
       },
       required: definition.required === true ? [definition.name] : [],
       type: 'object',

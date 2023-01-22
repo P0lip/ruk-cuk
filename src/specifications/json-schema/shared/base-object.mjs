@@ -1,48 +1,35 @@
-import BaseObject from '../../shared/base-object.mjs';
+import BaseAnnotatedObject from '../../shared/base-annotated-object.mjs';
 
-const TS_TAGS_MAP = Object.entries({
-  '@defaultValue': 'default',
-  '@deprecated': 'deprecated',
-  '@internal': 'x-internal',
-});
+const TS_TAGS_MAP = [
+  {
+    keyword: 'description',
+    kind: 'string',
+    tag: '',
+  },
+  {
+    keyword: 'deprecated',
+    kind: 'boolean',
+    tag: '@deprecated',
+  },
+  {
+    keyword: 'x-internal',
+    kind: 'boolean',
+    tag: '@internal',
+  },
+  {
+    keyword: 'default',
+    kind: 'unknown',
+    tag: '@defaultValue',
+  },
+];
 
-export default class BaseSchemaObject extends BaseObject {
+export default class BaseSchemaObject extends BaseAnnotatedObject {
   #definition;
 
   constructor(definition, owner) {
-    super(definition, owner);
+    super(definition, owner, TS_TAGS_MAP);
 
     this.#definition = definition;
     this.context = owner.context;
-  }
-
-  get tsDocBlock() {
-    const block = [];
-
-    if (
-      'description' in this.#definition &&
-      typeof this.#definition.description === 'string' &&
-      this.#definition.description.length > 0
-    ) {
-      block.push(this.#definition.description.trim());
-    }
-
-    block.push(
-      ...TS_TAGS_MAP.map(([tag, keyword]) => {
-        if (!(keyword in this.#definition)) return null;
-
-        const value = this.#definition[keyword];
-
-        switch (keyword) {
-          case 'deprecated':
-          case 'x-internal':
-            return value === true ? `${tag}` : null;
-          default:
-            return `${tag} \`${JSON.stringify(value)}\``;
-        }
-      }).filter(Boolean),
-    );
-
-    return block.join('\n');
   }
 }

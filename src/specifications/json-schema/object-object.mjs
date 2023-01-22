@@ -1,7 +1,6 @@
 import * as t from '@babel/types';
 
 import isSafeIdentifier from '../../codegen/utils/is-safe-identifier.mjs';
-import { prepareForBlockComment } from '../../utils/strings.mjs';
 import { registerSchema } from '../../validation/ajv.mjs';
 import assignObject from './schema-utils/assign-object.mjs';
 import BaseObject from './shared/base-object.mjs';
@@ -90,11 +89,7 @@ export default class ObjectObject extends BaseObject {
       );
       prop.optional = !required;
 
-      const { tsDocBlock } = value;
-      if (tsDocBlock !== void 0 && tsDocBlock.length > 0) {
-        t.addComment(prop, 'leading', prepareForBlockComment(tsDocBlock));
-      }
-
+      value.attachTsDocBlock(prop);
       return prop;
     });
 

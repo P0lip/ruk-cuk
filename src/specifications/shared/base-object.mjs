@@ -54,6 +54,10 @@ export default class BaseObject {
     return this.#root;
   }
 
+  attachTsDocBlock(node) {
+    return node;
+  }
+
   static buildHoistedObject(object) {
     const built = BaseObject.build(object);
     if (!isHoistable(built)) {

@@ -79,7 +79,7 @@ export default class OpenAPIObject {
   }
 
   build() {
-    const nodes = [...this.pathItems.values(), this.components];
+    const nodes = [...this.pathItems, this.components];
 
     for (const object of nodes) {
       if (object instanceof PathItemObject) {

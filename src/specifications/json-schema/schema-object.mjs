@@ -96,16 +96,20 @@ export default class JSONSchemaObject extends BaseObject {
 
   build() {
     return t.program([
-      t.tsTypeAliasDeclaration(
-        t.identifier(this.scope.load(this)),
-        null,
-        this.#rootSchema.build(),
+      this.#rootSchema.attachTsDocBlock(
+        t.tsTypeAliasDeclaration(
+          t.identifier(this.scope.load(this)),
+          null,
+          this.#rootSchema.build(),
+        ),
       ),
       ...this.#defs.map(def =>
-        t.tsTypeAliasDeclaration(
-          t.identifier(this.scope.load(def)),
-          null,
-          def.build(),
+        def.attachTsDocBlock(
+          t.tsTypeAliasDeclaration(
+            t.identifier(this.scope.load(def)),
+            null,
+            def.build(),
+          ),
         ),
       ),
     ]);
