@@ -3,11 +3,11 @@ import OpenAPIObject from '../specifications/openapi/openapi-object.mjs';
 import JSONSchemaTree from './json-schema-tree.mjs';
 import OpenAPITree from './openapi-tree.mjs';
 
-export default function (definition, config) {
+export default function generate(source, config) {
   const document =
-    'openapi' in definition
-      ? new OpenAPIObject(definition, new OpenAPITree(config))
-      : new StandaloneJSONSchemaObject(definition, new JSONSchemaTree(config));
+    'openapi' in source.definition
+      ? new OpenAPIObject(source, new OpenAPITree(config))
+      : new StandaloneJSONSchemaObject(source, new JSONSchemaTree(config));
 
   try {
     return String(document);

@@ -1,5 +1,5 @@
-import Resolver from '../../codegen/resolver.mjs';
 import Scope from '../../codegen/scope.mjs';
+import Resolver from '../../core/resolver.mjs';
 import { registerSchema } from '../../validation/ajv.mjs';
 import SchemaObject from '../openapi/schema-object.mjs';
 
@@ -11,7 +11,7 @@ const SCHEMA = registerSchema({
 export default class StandaloneJSONSchemaObject {
   #object;
 
-  constructor(definition, tree, name = definition.title) {
+  constructor({ definition }, tree, name = definition.title) {
     this.definition = definition;
     this.owner = this;
     this.tree = tree;

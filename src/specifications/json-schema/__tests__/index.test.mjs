@@ -2,6 +2,7 @@ import chai from 'chai';
 import { describe, it } from 'mocha';
 
 import JSONSchemaTree from '../../../codegen/json-schema-tree.mjs';
+import SourceDocument from '../../../core/source-document.mjs';
 import StandaloneJSONSchemaObject from '../standalone-schema-object.mjs';
 
 const { expect } = chai;
@@ -9,7 +10,7 @@ const { expect } = chai;
 function print(document) {
   return String(
     new StandaloneJSONSchemaObject(
-      document,
+      new SourceDocument(document, null),
       new JSONSchemaTree(document),
       document.title ?? 'Model',
     ),

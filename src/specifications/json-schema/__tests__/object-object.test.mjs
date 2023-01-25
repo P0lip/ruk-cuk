@@ -2,12 +2,17 @@ import chai from 'chai';
 import { describe, it } from 'mocha';
 
 import JSONSchemaTree from '../../../codegen/json-schema-tree.mjs';
+import SourceDocument from '../../../core/source-document.mjs';
 import StandaloneJSONSchemaObject from '../standalone-schema-object.mjs';
 
 const { expect } = chai;
 function print(document) {
   return String(
-    new StandaloneJSONSchemaObject(document, new JSONSchemaTree(), 'Model'),
+    new StandaloneJSONSchemaObject(
+      new SourceDocument(document, null),
+      new JSONSchemaTree(),
+      'Model',
+    ),
   );
 }
 

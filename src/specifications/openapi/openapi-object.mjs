@@ -1,5 +1,5 @@
-import Resolver from '../../codegen/resolver.mjs';
 import Scope from '../../codegen/scope.mjs';
+import Resolver from '../../core/resolver.mjs';
 import { toSnakePascalCase } from '../../utils/strings.mjs';
 import {
   assertValidDefinition,
@@ -42,7 +42,7 @@ const SCHEMA = registerSchema({
 export default class OpenAPIObject {
   #definition;
 
-  constructor(definition, tree) {
+  constructor({ definition }, tree) {
     assertValidDefinition(definition, OpenAPIObject.schema);
 
     this.document = definition;

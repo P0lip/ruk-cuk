@@ -6,6 +6,7 @@ import chai from 'chai';
 import { describe, it } from 'mocha';
 import forEach from 'mocha-each';
 
+import SourceDocument from '../../core/source-document.mjs';
 import generate from '../index.mjs';
 
 const { expect } = chai;
@@ -31,15 +32,17 @@ const cases = await (async function traverse(currentDir, items) {
 describe('Codegen', () => {
   forEach(Array.from(cases), it, describe).describe('given %s', name => {
     it('matches output', async () => {
-      const input = JSON.parse(
-        await fs.readFile(join(cwd, name, 'input.json'), 'utf8'),
-      );
+      const source = join(cwd, name, 'input.json');
+      const input = JSON.parse(await fs.readFile(source, 'utf8'));
       const output = (
         await fs.readFile(join(cwd, name, 'output.ts'), 'utf8')
       ).trim();
 
       expect(
-        generate(input, { namespacePrefix: '', skipEvents: false }).trim(),
+        generate(new SourceDocument(input, source), {
+          namespacePrefix: '',
+          skipEvents: false,
+        }).trim(),
       ).to.eq(output);
     });
   });
@@ -55,7 +58,7 @@ describe('Codegen', () => {
     };
 
     expect(
-      generate(input, {
+      generate(new SourceDocument(input, null), {
         footer: '// I am a footer!',
         header: '// I am a header!',
         namespacePrefix: '',

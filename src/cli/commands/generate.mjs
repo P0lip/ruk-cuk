@@ -6,6 +6,7 @@ import prettier from 'prettier';
 import loadConfig from '#config/load';
 
 import generate from '../../codegen/index.mjs';
+import SourceDocument from '../../core/source-document.mjs';
 import { read, readAll, write } from '../io.mjs';
 
 const CONFIG_CACHE = {
@@ -20,7 +21,10 @@ async function writeWithPrettify({ filepath, content }, argv) {
   }));
 
   try {
-    let code = generate(JSON.parse(content), config);
+    let code = generate(
+      new SourceDocument(JSON.parse(content), filepath),
+      config,
+    );
 
     if (argv.prettify) {
       code = prettier.format(code, {
