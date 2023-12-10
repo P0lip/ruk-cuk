@@ -28,9 +28,8 @@ async function writeWithPrettify({ filepath, content }, argv) {
 
     if (argv.prettify) {
       code = prettier.format(code, {
-        ...(CONFIG_CACHE.prettier[filepath] ??= await prettier.resolveConfig(
-          filepath,
-        )),
+        ...(CONFIG_CACHE.prettier[filepath] ??=
+          await prettier.resolveConfig(filepath)),
         parser: 'typescript',
       });
     }

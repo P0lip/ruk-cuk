@@ -50,14 +50,17 @@
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.32.0",
-    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-chai-expect": "^3.0.0",
     "eslint-plugin-chai-friendly": "^0.7.2",
-    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-simple-import-sort": "^9.0.0",
     "husky": "^4.3.8",
     "mocha-each": "^2.0.1",
-    "prettier": "^2.8.3"
+    "prettier": "^3.1.1"
+  },
+  "peerDependencies": {
+    "prettier": "^3"
   },
   "dependencies": {
     "@babel/generator": "^7.16.5",
