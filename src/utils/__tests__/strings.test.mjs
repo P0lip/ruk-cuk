@@ -1,5 +1,6 @@
+import { describe, it } from 'node:test';
+
 import chai from 'chai';
-import { describe, it } from 'mocha';
 import forEach from 'mocha-each';
 
 import { toPascalCase, toSnakePascalCase } from '../strings.mjs';

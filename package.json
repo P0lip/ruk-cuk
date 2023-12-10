@@ -40,14 +40,13 @@
   },
   "scripts": {
     "lint": "ls-lint && eslint --cache --cache-location .cache/ --ext=.mjs src/",
-    "test": "NODE_ENV=test c8 mocha --config .mocharc ./**/__tests__/**/*.test.mjs",
+    "test": "node --test",
     "prepublishOnly": "npm run lint && npm run test"
   },
   "devDependencies": {
     "@babel/parser": "^7.20.7",
     "@ls-lint/ls-lint": "^1.11.2",
     "@types/yargs": "^17.0.20",
-    "c8": "^7.12.0",
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.32.0",
@@ -57,7 +56,6 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-simple-import-sort": "^9.0.0",
     "husky": "^4.3.8",
-    "mocha": "^10.2.0",
     "mocha-each": "^2.0.1",
     "prettier": "^2.8.3"
   },

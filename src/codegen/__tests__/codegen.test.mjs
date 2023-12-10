@@ -1,9 +1,9 @@
 import { promises as fs } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import chai from 'chai';
-import { describe, it } from 'mocha';
 import forEach from 'mocha-each';
 
 import SourceDocument from '../../core/source-document.mjs';

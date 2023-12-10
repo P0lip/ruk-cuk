@@ -1,6 +1,7 @@
+import { describe, it } from 'node:test';
+
 import generate from '@babel/generator';
 import chai from 'chai';
-import { describe, it } from 'mocha';
 
 import _merge from '../merge.mjs';
 

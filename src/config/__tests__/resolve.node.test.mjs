@@ -1,9 +1,9 @@
 import { join } from 'node:path';
+import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { describe, it } from 'mocha';
 
 import { NotFoundError } from '../errors.mjs';
 import resolveConfig from '../resolve.node.mjs';

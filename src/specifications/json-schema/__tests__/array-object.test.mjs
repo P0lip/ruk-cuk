@@ -1,5 +1,6 @@
+import { describe, it } from 'node:test';
+
 import chai from 'chai';
-import { describe, it } from 'mocha';
 
 import JSONSchemaTree from '../../../codegen/json-schema-tree.mjs';
 import SourceDocument from '../../../core/source-document.mjs';
