@@ -7,10 +7,7 @@ declare namespace Pets {
     };
   };
   type Events = never;
-  type CreatePetParams = {
-    size: "s" | "m" | "l";
-    kind?: string;
-  };
+  type CreatePetParams = Pick<GetStateParams, "size" | "kind">;
   type GetStateParams = PetId & {
     size: "s" | "m" | "l";
     kind?: string;

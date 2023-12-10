@@ -2,9 +2,9 @@ import { isPlainObject } from '@stoplight/json';
 
 import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from '../shared/base-object.mjs';
+import { assignForeignObject } from '../shared/foreign-object.mjs';
 import JsonReferenceObject from '../shared/json-reference-object.mjs';
 import SchemaObject from './schema-object.mjs';
-import { isSharedComponentRef } from './utils/refs.mjs';
 
 const SCHEMA = registerSchema({
   $id: 'ruk-cuk/openapi/media-object',
@@ -16,7 +16,7 @@ const SCHEMA = registerSchema({
   type: 'object',
 });
 
-export class MediaTypeObject extends BaseObject {
+export default class MediaTypeObject extends BaseObject {
   constructor(definition, owner) {
     super(definition, owner);
 
@@ -31,14 +31,14 @@ export class MediaTypeObject extends BaseObject {
 
   static createMediaTypeObjects(definition, owner) {
     if ('$ref' in definition) {
-      if (isSharedComponentRef(definition.$ref)) {
-        return [new JsonReferenceObject(definition, owner)];
-      } else {
-        return MediaTypeObject.createMediaTypeObjects(
-          owner.resolver.resolveDocumentFragment(definition.$ref),
-          owner,
-        );
-      }
+      return [
+        new JsonReferenceObject(
+          definition,
+          owner.resolver.isForeign(definition.$ref)
+            ? assignForeignObject(definition, owner)
+            : owner,
+        ),
+      ];
     }
 
     const mediaTypeObjects = [];

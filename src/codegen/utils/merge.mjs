@@ -1,3 +1,5 @@
+import * as t from '@babel/types';
+
 import { isPrimitiveLiteralTypeNode, isPrimitiveTypeNode } from './guards.mjs';
 
 function pickName(node) {
@@ -149,13 +151,67 @@ function dedupeTypeLiterals(node, strict) {
   }
 }
 
+function dedupeTypeParameterInstantiation(params, node) {
+  if (node.typeName.type !== 'Identifier') return false;
+  if (node.typeParameters.params.length !== 2) return false;
+  if (node.typeParameters.params[0].type !== 'TSTypeReference') return false;
+  if (node.typeParameters.params[0].typeName.type !== 'Identifier')
+    return false;
+
+  const existingType = params.get(node.typeName.name);
+  if (existingType === void 0) {
+    params.set(
+      node.typeName.name,
+      new Map([
+        [
+          node.typeParameters.params[0].typeName.name,
+          node.typeParameters.params,
+        ],
+      ]),
+    );
+    return false;
+  }
+
+  const existingParams = existingType.get(
+    node.typeParameters.params[0].typeName.name,
+  );
+
+  if (existingParams === void 0) {
+    existingType.set(
+      node.typeParameters.params[0].typeName.name,
+      node.typeParameters.params,
+    );
+    return false;
+  }
+
+  if (existingParams[1].type !== 'TSTypeLiteral') {
+    existingParams[1] = t.tsUnionType([
+      existingParams[1],
+      node.typeParameters.params[1],
+    ]);
+  } else {
+    existingParams[1].types.push(node.typeParameters.params[1]);
+  }
+
+  return true;
+}
+
 function dedupeTypeReferences(node) {
   const seen = new Set();
+  const params = new Map();
 
   for (let i = 0; i < node.types.length; i++) {
     const typeNode = node.types[i];
     if (typeNode.type !== 'TSTypeReference') continue;
-    if (typeNode.typeParameters && typeNode.typeParameters.params.length > 0) {
+    if (
+      typeNode.typeParameters?.type === 'TSTypeParameterInstantiation' &&
+      typeNode.typeParameters.params.length > 0
+    ) {
+      if (dedupeTypeParameterInstantiation(params, typeNode)) {
+        node.types.splice(i, 1);
+        i--;
+      }
+
       continue;
     }
 
@@ -170,13 +226,40 @@ function dedupeTypeReferences(node) {
   }
 }
 
+export function dedupeKeywords(node) {
+  const seen = new Set();
+
+  const keywords = [
+    'TSUnknownKeyword',
+    'TSNullKeyword',
+    'TSBooleanKeyword',
+    'TSNumberKeyword',
+    'TSStringKeyword',
+  ];
+
+  for (let i = 0; i < node.types.length; i++) {
+    if (!keywords.includes(node.types[i].type)) {
+      continue;
+    }
+
+    if (seen.has(node.types[i].type)) {
+      node.types.splice(i, 1);
+      i--;
+    } else {
+      seen.add(node.types[i].type);
+    }
+  }
+}
+
 export default function merge(node) {
   switch (node.type) {
     case 'TSIntersectionType':
+      dedupeKeywords(node);
       dedupeTypeLiterals(node, false);
       dedupeTypeReferences(node);
       break;
     case 'TSUnionType':
+      dedupeKeywords(node);
       dedupeTypeReferences(node);
       dedupeTypeLiterals(node, true);
       break;

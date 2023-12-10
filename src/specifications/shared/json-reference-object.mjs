@@ -1,7 +1,6 @@
-import * as t from '@babel/types';
+import { extractPointerFromRef } from '@stoplight/json';
 
 import { registerSchema } from '../../validation/ajv.mjs';
-import assignObject from '../json-schema/schema-utils/assign-object.mjs';
 import BaseObject from './base-object.mjs';
 
 const SCHEMA = registerSchema({
@@ -17,19 +16,27 @@ const SCHEMA = registerSchema({
 });
 
 export default class JsonReferenceObject extends BaseObject {
-  #$ref;
+  ref;
 
   constructor(definition, owner) {
     super(definition, owner);
 
-    this.#$ref = definition.$ref;
+    this.ref = extractPointerFromRef(definition.$ref);
   }
 
   static schema = SCHEMA;
 
   get referencedObject() {
     try {
-      return this.resolver.resolveObject(this.#$ref);
+      return this.resolver.resolveObject(this.ref);
+    } catch (ex) {
+      return null;
+    }
+  }
+
+  get resolvedFragment() {
+    try {
+      return this.resolver.resolveInlineRef(this.ref);
     } catch {
       return null;
     }
@@ -38,12 +45,9 @@ export default class JsonReferenceObject extends BaseObject {
   build() {
     const { referencedObject } = this;
     if (referencedObject === null) {
-      return assignObject(
-        this.resolver.resolveDocumentFragment(this.#$ref),
-        this,
-      ).build();
+      throw ReferenceError(`Cannot resolve reference ${this.ref}`);
     }
 
-    return t.tsTypeReference(t.identifier(referencedObject.name));
+    return this.tree.bundled.generateAccessPath(referencedObject);
   }
 }

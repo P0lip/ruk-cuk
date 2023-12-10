@@ -1,10 +1,11 @@
+import * as t from '@babel/types';
+
 import combineNodes from '../../codegen/utils/combine-nodes.mjs';
 import { capitalize } from '../../utils/strings.mjs';
 import BaseObject from '../shared/base-object.mjs';
 import JsonReferenceObject from '../shared/json-reference-object.mjs';
 import ParameterObject from './parameter-object.mjs';
 import RequestBodyObject from './request-body-object.mjs';
-import { isSharedComponentRef } from './utils/refs.mjs';
 
 export default class ParametersVirtualObject extends BaseObject {
   #parameters;
@@ -13,10 +14,11 @@ export default class ParametersVirtualObject extends BaseObject {
   constructor(definition, owner) {
     super(definition, owner);
 
-    this.name = `${capitalize(owner.name)}Params`;
+    this.name = this.scope.generateUnique(`${capitalize(owner.name)}Params`);
+    this.scope.store(this);
     this.#parameters = [
       ...owner.owner.parameters,
-      ...(definition.parameters?.map(this.#processParameter, this) ?? []),
+      ...(definition.parameters?.map(ParameterObject.create, this) ?? []),
     ];
 
     this.#requestBody = this.#extractRequestBody(definition);
@@ -38,6 +40,16 @@ export default class ParametersVirtualObject extends BaseObject {
     return this.#filteredObjects.length;
   }
 
+  generateAccessPath(object) {
+    return t.tsTypeReference(
+      t.identifier('Pick'),
+      t.tsTypeParameterInstantiation([
+        t.tsTypeReference(t.identifier(object.owner.name)),
+        t.tsLiteralType(t.stringLiteral(object.definitionName)),
+      ]),
+    );
+  }
+
   build() {
     return combineNodes(
       this.#filteredObjects.map(BaseObject.build),
@@ -50,21 +62,6 @@ export default class ParametersVirtualObject extends BaseObject {
     return 'requestBody' in definition
       ? new RequestBodyObject(definition.requestBody, this, this.name)
       : null;
-  }
-
-  #processParameter(parameterObjectOrReferenceObject) {
-    if (!('$ref' in parameterObjectOrReferenceObject)) {
-      return new ParameterObject(parameterObjectOrReferenceObject, this);
-    } else if (!isSharedComponentRef(parameterObjectOrReferenceObject.$ref)) {
-      return new ParameterObject(
-        this.resolver.resolveDocumentFragment(
-          parameterObjectOrReferenceObject.$ref,
-        ),
-        this,
-      );
-    } else {
-      return new JsonReferenceObject(parameterObjectOrReferenceObject, this);
-    }
   }
 
   static #isRelevantParameter(object) {

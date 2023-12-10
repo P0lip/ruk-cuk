@@ -3,7 +3,7 @@ import { registerSchema } from '../../validation/ajv.mjs';
 import BaseAnnotatedObject from '../shared/base-annotated-object.mjs';
 import BaseObject from '../shared/base-object.mjs';
 import JsonReferenceObject from '../shared/json-reference-object.mjs';
-import { MediaTypeObject } from './media-type-object.mjs';
+import MediaTypeObject from './media-type-object.mjs';
 
 const SCHEMA = registerSchema({
   $id: 'ruk-cuk/openapi/content-virtual-object',

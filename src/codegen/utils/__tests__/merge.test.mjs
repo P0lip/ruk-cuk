@@ -110,4 +110,19 @@ describe('mergeObjects util', () => {
 }`,
     );
   });
+
+  it('instantiation expressions', () => {
+    expect(
+      merge(
+        `Pick<Test, 'id'> & Pick<Test, 'bar'> & Exclude<Test, 'name'> & Exclude<Test, 'test'>`,
+      ),
+    ).to.eq(`Pick<Test, 'id' | 'bar'> & Exclude<Test, 'name' | 'test'>`);
+  });
+
+  it('multiple unknown/string/number/boolean keywords', () => {
+    expect(merge('unknown | unknown')).to.eq('unknown');
+    expect(merge('unknown & unknown')).to.eq('unknown');
+    expect(merge('string & number & string')).to.eq('string & number');
+    expect(merge('string | number | string')).to.eq('string | number');
+  });
 });

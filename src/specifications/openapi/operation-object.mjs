@@ -19,10 +19,7 @@ const SCHEMA = registerSchema({
     },
     parameters: {
       items: {
-        oneOf: [
-          { $ref: './parameter-object#' },
-          { $ref: '../json-reference-object#' },
-        ],
+        $ref: './parameter-object#',
       },
       type: 'array',
     },

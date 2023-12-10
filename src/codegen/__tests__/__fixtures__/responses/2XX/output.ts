@@ -6,10 +6,7 @@ declare namespace Pets {
     };
   };
   type Events = never;
-  type GetCatResponse = {
-    id?: number;
-    kind?: "Dog" | "Cat";
-  };
+  type GetCatResponse = Pet;
   type GetPetResponse = Pet;
   type Pet = {
     id?: number;

@@ -1,3 +1,4 @@
+import * as fs from 'node:fs/promises';
 import process from 'node:process';
 
 import chalk from 'chalk';
@@ -21,16 +22,16 @@ async function writeWithPrettify({ filepath, content }, argv) {
   }));
 
   try {
-    let code = generate(
+    let code = await generate(
       new SourceDocument(JSON.parse(content), filepath),
       config,
+      fs,
     );
 
     if (argv.prettify) {
-      code = prettier.format(code, {
-        ...(CONFIG_CACHE.prettier[filepath] ??= await prettier.resolveConfig(
-          filepath,
-        )),
+      code = await prettier.format(code, {
+        ...(CONFIG_CACHE.prettier[filepath] ??=
+          await prettier.resolveConfig(filepath)),
         parser: 'typescript',
       });
     }

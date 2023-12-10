@@ -14,10 +14,7 @@ const SCHEMA = registerSchema({
   properties: {
     parameters: {
       additionalProperties: {
-        oneOf: [
-          { $ref: './parameter-object#' },
-          { $ref: '../json-reference-object#' },
-        ],
+        $ref: './parameter-object#',
       },
       type: 'object',
     },
@@ -56,22 +53,24 @@ export default class ComponentsObject extends BaseObject {
 
     for (const [, definition] of ComponentsObject.#entries(parameters)) {
       objects.push(new ParameterObject(definition, this));
-      this.resolver.store(definition, objects.at(-1));
     }
 
     for (const [key, definition] of ComponentsObject.#entries(schemas)) {
       objects.push(new SchemaObject(definition, this, key));
-      this.resolver.store(definition, objects.at(-1));
     }
 
     for (const [key, definition] of ComponentsObject.#entries(responses)) {
-      objects.push(new ResponseObject(definition, this, key));
-      this.resolver.store(definition, objects.at(-1));
+      const uniqueKey = this.scope.generateUnique(key);
+      const object = new ResponseObject(definition, this, uniqueKey);
+      this.scope.store(object);
+      objects.push(object);
     }
 
     for (const [key, definition] of ComponentsObject.#entries(requestBodies)) {
-      objects.push(new RequestBodyObject(definition, this, key));
-      this.resolver.store(definition, objects.at(-1));
+      const uniqueKey = this.scope.generateUnique(key);
+      const object = new RequestBodyObject(definition, this, uniqueKey);
+      this.scope.store(object);
+      objects.push(object);
     }
   }
 

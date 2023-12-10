@@ -12,6 +12,6 @@ const SCHEMA = registerSchema({
   type: 'object',
 });
 
-export default class RequestObjectBody extends ContentVirtualObject {
+export default class RequestBodyObject extends ContentVirtualObject {
   static schema = SCHEMA;
 }

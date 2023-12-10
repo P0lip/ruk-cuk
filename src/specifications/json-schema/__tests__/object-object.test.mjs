@@ -1,18 +1,23 @@
+import * as fs from 'node:fs/promises';
 import { describe, it } from 'node:test';
 
 import chai from 'chai';
 
 import JSONSchemaTree from '../../../codegen/json-schema-tree.mjs';
+import Resolver from '../../../core/resolver.mjs';
 import SourceDocument from '../../../core/source-document.mjs';
 import StandaloneJSONSchemaObject from '../standalone-schema-object.mjs';
 
 const { expect } = chai;
 function print(document) {
+  const sourceDocument = new SourceDocument(document, null);
+  const resolver = new Resolver(sourceDocument, fs);
   return String(
     new StandaloneJSONSchemaObject(
-      new SourceDocument(document, null),
-      new JSONSchemaTree(),
-      'Model',
+      sourceDocument,
+      resolver,
+      new JSONSchemaTree(document),
+      document.title ?? 'Model',
     ),
   );
 }

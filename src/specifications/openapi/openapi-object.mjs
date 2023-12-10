@@ -1,10 +1,12 @@
-import Scope from '../../codegen/scope.mjs';
-import Resolver from '../../core/resolver.mjs';
+import * as t from '@babel/types';
+
+import OpenAPITree from '../../codegen/openapi-tree.mjs';
 import { toSnakePascalCase } from '../../utils/strings.mjs';
 import {
   assertValidDefinition,
   registerSchema,
 } from '../../validation/ajv.mjs';
+import DocumentObject from '../shared/document-object.mjs';
 import ComponentsObject from './components-object.mjs';
 import PathItemObject from './path-item-object.mjs';
 
@@ -18,7 +20,7 @@ const SCHEMA = registerSchema({
     info: {
       properties: {
         title: {
-          pattern: '^[A-Za-z\\s]{4,}$',
+          // pattern: '^[A-Za-z\\s]{4,}$',
           type: 'string',
         },
       },
@@ -35,21 +37,18 @@ const SCHEMA = registerSchema({
       type: 'object',
     },
   },
-  required: ['info', 'paths'],
+  required: ['info'],
   type: 'object',
 });
 
-export default class OpenAPIObject {
+export default class OpenAPIObject extends DocumentObject {
   #definition;
 
-  constructor({ definition }, tree) {
-    assertValidDefinition(definition, OpenAPIObject.schema);
+  constructor(sourceDocument, resolver, tree) {
+    super(sourceDocument, resolver, tree);
 
-    this.document = definition;
-    this.tree = tree;
-    this.cache = new Map();
-    this.scope = Scope.register(this);
-    this.resolver = new Resolver(definition);
+    const { definition } = sourceDocument;
+    assertValidDefinition(definition, OpenAPIObject.schema);
 
     this.owner = this;
     this.#definition = definition;
@@ -58,21 +57,19 @@ export default class OpenAPIObject {
     this.tree.name = this.name;
 
     this.components = new ComponentsObject(definition.components ?? {}, this);
-    this.pathItems = this.#getPathItemObjects();
+    this.pathItems =
+      tree instanceof OpenAPITree ? this.#getPathItemObjects() : [];
   }
 
   static schema = SCHEMA;
 
-  dispose() {
-    this.cache.clear();
-    Scope.unregister(this);
-  }
-
   #getPathItemObjects() {
     const pathItems = [];
 
-    for (const definition of Object.values(this.#definition.paths)) {
-      pathItems.push(new PathItemObject(definition, this));
+    if ('paths' in this.#definition) {
+      for (const definition of Object.values(this.#definition.paths)) {
+        pathItems.push(new PathItemObject(definition, this));
+      }
     }
 
     return pathItems;
@@ -90,6 +87,8 @@ export default class OpenAPIObject {
         this.tree.addObject(object);
       }
     }
+
+    return t.program(this.tree.nodes);
   }
 
   toString() {

@@ -99,7 +99,7 @@ export default class ResponsesObject extends BaseObject {
     responseObjects.push(
       ...Object.keys(responses)
         .filter(ResponsesObject.#isSuccessResponse)
-        .map(code => new ResponseObject(responses[code], this, code)),
+        .map(code => new ResponseObject(responses[code], this, this.name)),
     );
 
     return responseObjects;

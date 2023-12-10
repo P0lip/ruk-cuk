@@ -30,8 +30,8 @@ const cases = await (async function traverse(currentDir, items) {
 })(cwd, new Set());
 
 describe('Codegen', () => {
-  forEach(Array.from(cases), it, describe).describe('given %s', name => {
-    it('matches output', async () => {
+  forEach(Array.from(cases), it, describe).describe('given %s', async name => {
+    it(`matches output ${name}`, async () => {
       const source = join(cwd, name, 'input.json');
       const input = JSON.parse(await fs.readFile(source, 'utf8'));
       const output = (
@@ -39,15 +39,21 @@ describe('Codegen', () => {
       ).trim();
 
       expect(
-        generate(new SourceDocument(input, source), {
-          namespacePrefix: '',
-          skipEvents: false,
-        }).trim(),
+        (
+          await generate(
+            new SourceDocument(input, source),
+            {
+              namespacePrefix: '',
+              skipEvents: false,
+            },
+            fs,
+          )
+        ).trim(),
       ).to.eq(output);
     });
   });
 
-  it('supports header and footer', () => {
+  it('supports header and footer', async () => {
     const input = {
       openapi: '3.1.0',
       info: {
@@ -58,12 +64,18 @@ describe('Codegen', () => {
     };
 
     expect(
-      generate(new SourceDocument(input, null), {
-        footer: '// I am a footer!',
-        header: '// I am a header!',
-        namespacePrefix: '',
-        skipEvents: false,
-      }).trim(),
+      (
+        await generate(
+          new SourceDocument(input, null),
+          {
+            footer: '// I am a footer!',
+            header: '// I am a header!',
+            namespacePrefix: '',
+            skipEvents: false,
+          },
+          fs,
+        )
+      ).trim(),
     ).to.eq(`// I am a header!
 declare namespace My_API {
   type Actions = {};

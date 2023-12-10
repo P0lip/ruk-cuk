@@ -1,8 +1,8 @@
 import * as t from '@babel/types';
 
-import Tree from './tree.mjs';
+import BundledTree from './bundled-tree.mjs';
 
-export default class JSONSchemaTree extends Tree {
+export default class JSONSchemaTree extends BundledTree {
   constructor(document, config) {
     super(document, config);
 

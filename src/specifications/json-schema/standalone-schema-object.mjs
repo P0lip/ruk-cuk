@@ -1,5 +1,5 @@
+import BundledTree from '../../codegen/bundled-tree.mjs';
 import Scope from '../../codegen/scope.mjs';
-import Resolver from '../../core/resolver.mjs';
 import { registerSchema } from '../../validation/ajv.mjs';
 import SchemaObject from '../openapi/schema-object.mjs';
 
@@ -11,17 +11,30 @@ const SCHEMA = registerSchema({
 export default class StandaloneJSONSchemaObject {
   #object;
 
-  constructor({ definition }, tree, name = definition.title) {
-    this.definition = definition;
+  constructor(
+    sourceDocument,
+    resolver,
+    tree,
+    name = sourceDocument.definition.title,
+  ) {
+    this.definition = sourceDocument.definition;
     this.owner = this;
     this.tree = tree;
+    this.resolver = resolver;
     this.scope = Scope.register(this);
-    this.resolver = new Resolver(definition);
     this.cache = new Map();
-    this.#object = new SchemaObject(definition, this, name);
+    this.#object = new SchemaObject(
+      sourceDocument.definition,
+      this,
+      name ?? BundledTree.generateName(sourceDocument.source),
+    );
   }
 
   static schema = SCHEMA;
+
+  get name() {
+    return this.#object.name;
+  }
 
   dispose() {
     this.cache.clear();

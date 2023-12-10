@@ -2,17 +2,28 @@ import * as t from '@babel/types';
 
 import printTree from './utils/print-tree.mjs';
 
-export default class Tree {
+class TreeFragment {
+  #hoisted = new WeakMap();
   nodes = [];
 
-  #hoisted = new WeakMap();
-  #header;
-  #footer;
+  constructor(bundled = this) {
+    this.bundled = bundled;
+  }
 
-  constructor(config = {}) {
-    this.config = config;
-    this.#header = config.header ?? '';
-    this.#footer = config.footer ?? '';
+  createFragment() {
+    return new TreeFragment(this.bundled);
+  }
+
+  addNode(node) {
+    if (node.type === 'Program') {
+      this.nodes.push(...node.body);
+    } else {
+      this.nodes.push(node);
+    }
+  }
+
+  addObject(object) {
+    this.addNode(object.build());
   }
 
   hoist(name, node) {
@@ -26,17 +37,18 @@ export default class Tree {
 
     return hoisted;
   }
+}
 
-  addNode(node) {
-    if (node.type === 'Program') {
-      this.nodes.push(...node.body);
-    } else {
-      this.nodes.push(node);
-    }
-  }
+export default class Tree extends TreeFragment {
+  #header;
+  #footer;
 
-  addObject(object) {
-    this.addNode(object.build());
+  constructor(config = {}) {
+    super();
+    this.bundled = this;
+    this.config = config;
+    this.#header = config.header ?? '';
+    this.#footer = config.footer ?? '';
   }
 
   toString() {

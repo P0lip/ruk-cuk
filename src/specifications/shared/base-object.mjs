@@ -4,6 +4,7 @@ import { assertValidDefinition } from '../../validation/ajv.mjs';
 export default class BaseObject {
   #root;
   #name;
+  #resolver;
 
   constructor(definition, owner) {
     BaseObject.#assertValidDefinition(definition, this);
@@ -11,7 +12,17 @@ export default class BaseObject {
     this.scope = owner.scope;
     this.cache = owner.cache;
     this.tree = owner.tree;
-    this.resolver = owner.resolver;
+    this.#resolver = null;
+
+    this.resolver.store(definition, this);
+  }
+
+  set resolver(resolver) {
+    this.#resolver = resolver;
+  }
+
+  get resolver() {
+    return this.#resolver ?? this.owner.resolver;
   }
 
   static #assertValidDefinition(definition, owner) {
@@ -23,15 +34,7 @@ export default class BaseObject {
 
   get name() {
     if (this.#name === void 0) {
-      let _owner = this;
-
-      do {
-        _owner = _owner.owner;
-        if (_owner.name !== void 0) {
-          this.#name = `_${_owner.name}`.replace(/^_{2,}/, '_');
-          break;
-        }
-      } while ('owner' in _owner && _owner.owner !== _owner);
+      this.#name = `_${this.root.name}`.replace(/^_{2,}/, '_');
     }
 
     return this.#name;

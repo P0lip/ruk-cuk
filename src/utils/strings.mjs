@@ -25,6 +25,15 @@ export function capitalize(input) {
   return isEmptyString(input) ? '' : input[0].toUpperCase() + input.slice(1);
 }
 
+export function basename(uri) {
+  const base = uri.split('/').pop();
+  return base.slice(0, base.lastIndexOf('.'));
+}
+
+export function dirname(uri) {
+  return uri.slice(0, uri.lastIndexOf('/'));
+}
+
 export function prepareForBlockComment(input) {
   return [
     `*\n`,

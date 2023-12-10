@@ -1,6 +1,6 @@
 import * as t from '@babel/types';
 
-import Tree from './tree.mjs';
+import BundledTree from './bundled-tree.mjs';
 
 const EVENTS_TYPE = t.tsTypeAliasDeclaration(
   t.identifier('Events'),
@@ -8,8 +8,7 @@ const EVENTS_TYPE = t.tsTypeAliasDeclaration(
   t.tsNeverKeyword(),
 );
 
-export default class OpenAPITree extends Tree {
-  #root;
+export default class OpenAPITree extends BundledTree {
   #operations = {};
   #actions = [];
 
@@ -23,9 +22,10 @@ export default class OpenAPITree extends Tree {
       ].filter(Boolean),
     );
 
-    this.root = OpenAPITree.#generateModuleDeclaration(
+    this.root = BundledTree.generateModuleDeclaration(
       `${config.namespacePrefix}`,
       this.nodes,
+      true,
     );
   }
 
@@ -34,7 +34,16 @@ export default class OpenAPITree extends Tree {
   }
 
   set name(value) {
-    this.root.id.name = `${this.config.namespacePrefix}${value}`;
+    this.root.id.name = `${this.config.namespacePrefix ?? ''}${value}`;
+  }
+
+  generateAccessPath(object) {
+    const external = this.getExternal(object.resolver.uri);
+    if (external === void 0 && 'generateAccessPath' in object.owner) {
+      return object.owner.generateAccessPath(object);
+    }
+
+    return super.generateAccessPath(object);
   }
 
   static #generateActionAliasDeclaration(actions) {
@@ -43,15 +52,6 @@ export default class OpenAPITree extends Tree {
       null,
       t.tsTypeLiteral(actions),
     );
-  }
-
-  static #generateModuleDeclaration(name, body) {
-    const moduleDeclaration = t.tsModuleDeclaration(
-      t.identifier(name),
-      t.tsModuleBlock(body),
-    );
-    moduleDeclaration.declare = true;
-    return moduleDeclaration;
   }
 
   static #generateOperationPropertySignature([namespace, operations]) {

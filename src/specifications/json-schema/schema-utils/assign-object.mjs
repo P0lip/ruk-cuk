@@ -1,5 +1,5 @@
 import BinaryObject from '../../shared/binary-object.mjs';
-import JsonReferenceObject from '../../shared/json-reference-object.mjs';
+import { assignForeignObject } from '../../shared/foreign-object.mjs';
 import ArrayObject from '../array-object.mjs';
 import BooleanObject from '../boolean-object.mjs';
 import BooleanSchemaObject from '../boolean-schema-object.mjs';
@@ -8,6 +8,7 @@ import IntersectionObject from '../intersection-object.mjs';
 import NullObject from '../null-object.mjs';
 import NumericObject from '../numeric-object.mjs';
 import ObjectObject from '../object-object.mjs';
+import JsonReferenceObject from '../shared/json-reference-object.mjs';
 import StringObject from '../string-object.mjs';
 import TupleObject from '../tuple-object.mjs';
 import UnionObject from '../union-object.mjs';
@@ -21,6 +22,13 @@ function assignObject(schema, owner) {
   }
 
   if ('$ref' in schema) {
+    if (owner.resolver.isForeign(schema.$ref)) {
+      return new JsonReferenceObject(
+        schema,
+        assignForeignObject(schema, owner),
+      );
+    }
+
     return new JsonReferenceObject(schema, owner);
   }
 

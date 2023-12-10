@@ -1,9 +1,13 @@
+import '../../openapi/openapi-object.mjs';
+
 import { describe, it } from 'node:test';
 
 import chai from 'chai';
 
-import { AjvValidationError } from '../../../validation/ajv.mjs';
-import ResponsesObject from '../responses-object.mjs';
+import {
+  AjvValidationError,
+  assertValidDefinition,
+} from '../../../validation/ajv.mjs';
 
 const { expect } = chai;
 
@@ -11,21 +15,16 @@ describe('OpenAPI/Responses Object', () => {
   describe('validation', () => {
     it('given 2XX wildcard response, should disallow any other 2[0-9][0-9] response', () => {
       expect(
-        () =>
-          new ResponsesObject({
+        assertValidDefinition.bind(
+          null,
+          {
             200: {},
             '2XX': {},
-          }),
-      ).to.throw(AjvValidationError);
-    });
-
-    it('given 2XX wildcard response, should disallow any other 2[0-9][0-9] response', () => {
-      expect(
-        () =>
-          new ResponsesObject({
-            200: {},
-            '2XX': {},
-          }),
+          },
+          {
+            $id: 'ruk-cuk/openapi/responses-object#',
+          },
+        ),
       ).to.throw(AjvValidationError);
     });
   });

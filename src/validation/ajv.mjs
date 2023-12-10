@@ -1,5 +1,3 @@
-import * as assert from 'node:assert';
-
 import Ajv from 'ajv';
 
 const ajv = new Ajv({ strict: true });
@@ -21,8 +19,7 @@ export function registerSchema(schema) {
 
 export function assertValidDefinition(definition, schema) {
   const validate = ajv.getSchema(schema.$id);
-  assert.ok(
-    validate(definition),
-    new AjvValidationError(validate.errors ?? []),
-  );
+  if (!validate(definition)) {
+    throw new AjvValidationError(validate.errors ?? []);
+  }
 }
