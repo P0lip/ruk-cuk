@@ -1,0 +1,112 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Pets"
+  },
+  "paths": {
+    "/pets/{petId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/PetId"
+        }
+      ],
+      "get": {
+        "operationId": "v1.petstore.getPet",
+        "responses": {
+          "2XX": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pet"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "PetId": {
+        "name": "pet_id",
+        "x-ruk-cuk-name": "PetIdParam",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "NotFoundResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "Pet": {
+        "type": "object",
+        "additionalProperties": false,
+        "x-ruk-cuk-name": "PetSchema",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "kind": {
+            "enum": [
+              "Dog",
+              "Cat"
+            ],
+            "default": "Dog"
+          },
+          "species": {
+            "type": "string",
+            "deprecated": true
+          },
+          "population": {
+            "type": "integer",
+            "default": 0
+          },
+          "continents": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [
+              "Europe",
+              "Asia",
+              "Africa"
+            ]
+          },
+          "x-foo": {
+            "description": "This is a custom property used internally",
+            "type": "string",
+            "deprecated": true,
+            "x-internal": true
+          }
+        }
+      }
+    },
+    "responses": {
+      "NotFoundError": {
+        "description": "The requested resource was not found",
+        "x-ruk-cuk-name": "NotFoundErrorResponse",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/NotFoundResponse"
+            }
+          }
+        }
+      }
+    }
+  }
+}

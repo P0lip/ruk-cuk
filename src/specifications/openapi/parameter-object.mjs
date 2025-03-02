@@ -1,5 +1,6 @@
 import { isPlainObject } from '@stoplight/json';
 
+import { extractRukCukNameExtension } from '../../utils/extensions.mjs';
 import { toPascalCase } from '../../utils/strings.mjs';
 import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from '../shared/base-object.mjs';
@@ -33,7 +34,8 @@ export default class ParameterObject extends BaseObject {
   constructor(definition, owner) {
     super(definition, owner);
 
-    this.name = toPascalCase(definition.name);
+    const name = extractRukCukNameExtension(definition) ?? definition.name;
+    this.name = toPascalCase(name);
     this.in = definition.in;
 
     const schema = {

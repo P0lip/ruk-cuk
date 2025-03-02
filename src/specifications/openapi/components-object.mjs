@@ -2,6 +2,7 @@ import * as t from '@babel/types';
 import { isPlainObject } from '@stoplight/json';
 
 import buildObject from '../../codegen/utils/build-object.mjs';
+import { extractRukCukNameExtension } from '../../utils/extensions.mjs';
 import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from '../shared/base-object.mjs';
 import ParameterObject from './parameter-object.mjs';
@@ -60,17 +61,20 @@ export default class ComponentsObject extends BaseObject {
     }
 
     for (const [key, definition] of ComponentsObject.#entries(schemas)) {
-      objects.push(new SchemaObject(definition, this, key));
+      const name = extractRukCukNameExtension(definition) ?? key;
+      objects.push(new SchemaObject(definition, this, name));
       this.resolver.store(definition, objects.at(-1));
     }
 
     for (const [key, definition] of ComponentsObject.#entries(responses)) {
-      objects.push(new ResponseObject(definition, this, key));
+      const name = extractRukCukNameExtension(definition) ?? key;
+      objects.push(new ResponseObject(definition, this, name));
       this.resolver.store(definition, objects.at(-1));
     }
 
     for (const [key, definition] of ComponentsObject.#entries(requestBodies)) {
-      objects.push(new RequestBodyObject(definition, this, key));
+      const name = extractRukCukNameExtension(definition) ?? key;
+      objects.push(new RequestBodyObject(definition, this, name));
       this.resolver.store(definition, objects.at(-1));
     }
   }
