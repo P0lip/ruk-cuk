@@ -110,4 +110,59 @@ describe('mergeObjects util', () => {
 }`,
     );
   });
+
+  it('equal type references', () => {
+    expect(
+      merge(
+        `{ id: RukCukTypeHelpers.PathParams<string> } & { id: RukCukTypeHelpers.PathParams<string> }`,
+      ),
+    ).to.eq(`{
+  id: RukCukTypeHelpers.PathParams<string>;
+}`);
+
+    expect(merge(`{ id: Test<string, number> } & { id: Test<string, number> }`))
+      .to.eq(`{
+  id: Test<string, number>;
+}`);
+
+    expect(
+      merge(
+        `{ id: RukCukTypeHelpers.QueryParam } & { id: RukCukTypeHelpers.QueryParam }`,
+      ),
+    ).to.eq(`{
+  id: RukCukTypeHelpers.QueryParam;
+}`);
+  });
+
+  it('refuses to merge different type references', () => {
+    expect(
+      merge(
+        `{ id: RukCukTypeHelpers.CookieParam<string> } & { id: RukCukTypeHelpers.CookieParam }`,
+      ),
+    ).to.eq(`{
+  id: RukCukTypeHelpers.CookieParam<string>;
+} & {
+  id: RukCukTypeHelpers.CookieParam;
+}`);
+
+    expect(
+      merge(
+        `{ id: RukCukTypeHelpers.CookieParam<string> } & { id: RukCukTypeHelpers.CookieParam<string, string>}`,
+      ),
+    ).to.eq(`{
+  id: RukCukTypeHelpers.CookieParam<string>;
+} & {
+  id: RukCukTypeHelpers.CookieParam<string, string>;
+}`);
+
+    expect(
+      merge(
+        `{ id: RukCukTypeHelpers.PathParam<string, number> } & { id: RukCukTypeHelpers.PathParam<number, string> }`,
+      ),
+    ).to.eq(`{
+  id: RukCukTypeHelpers.PathParam<string, number>;
+} & {
+  id: RukCukTypeHelpers.PathParam<number, string>;
+}`);
+  });
 });

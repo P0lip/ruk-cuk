@@ -1,3 +1,4 @@
+import type * as RukCukTypeHelpers from "ruk-cuk/helpers.d.ts";
 declare namespace Pets {
   type Actions = {
     "v1.petstore": {
@@ -8,16 +9,16 @@ declare namespace Pets {
   };
   type Events = never;
   type CreatePetParams = {
-    size: "s" | "m" | "l";
-    kind?: string;
+    size: RukCukTypeHelpers.QueryParam<"s" | "m" | "l">;
+    kind?: RukCukTypeHelpers.QueryParam<string>;
   };
   type GetStateParams = PetId & {
-    size: "s" | "m" | "l";
-    kind?: string;
-    "X-Request-ID"?: unknown;
+    size: RukCukTypeHelpers.QueryParam<"s" | "m" | "l">;
+    kind?: RukCukTypeHelpers.QueryParam<string>;
+    "X-Request-ID"?: RukCukTypeHelpers.QueryParam<unknown>;
   };
   type UpdateStateParams = PetId;
   type PetId = {
-    pet_id: string;
+    pet_id: RukCukTypeHelpers.PathParam<string>;
   };
 }

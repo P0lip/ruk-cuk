@@ -109,7 +109,8 @@ type Model = [_Model, _Model, _Model];`);
     };
 
     expect(print(document)).to.eq(
-      `type Model = RukCukTypeHelpers.ArrayRange<{
+      `import type * as RukCukTypeHelpers from "ruk-cuk/helpers.d.ts";
+type Model = RukCukTypeHelpers.ArrayRange<{
   id?: string;
   [k: string]: unknown;
 }, 0, 3>;`,
@@ -134,7 +135,9 @@ type Model = [_Model, _Model, _Model];`);
       type: 'array',
     };
 
-    expect(print(document)).to.eq(`type Model = RukCukTypeHelpers.ArrayRange<{
+    expect(print(document)).to
+      .eq(`import type * as RukCukTypeHelpers from "ruk-cuk/helpers.d.ts";
+type Model = RukCukTypeHelpers.ArrayRange<{
   id: string;
 }, 2, 5>;`);
   });

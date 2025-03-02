@@ -9,7 +9,6 @@ const EVENTS_TYPE = t.tsTypeAliasDeclaration(
 );
 
 export default class OpenAPITree extends Tree {
-  #root;
   #operations = {};
   #actions = [];
 
@@ -27,6 +26,7 @@ export default class OpenAPITree extends Tree {
       `${config.namespacePrefix}`,
       this.nodes,
     );
+    this.program.body = [this.root];
   }
 
   get name() {

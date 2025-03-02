@@ -1,3 +1,6 @@
+import * as t from '@babel/types';
+
+import { REQUEST_BODY_HELPER } from '../../codegen/utils/ruk-cuk-helpers.mjs';
 import { registerSchema } from '../../validation/ajv.mjs';
 import ContentVirtualObject from './content-virtual-object.mjs';
 
@@ -14,4 +17,21 @@ const SCHEMA = registerSchema({
 
 export default class RequestObjectBody extends ContentVirtualObject {
   static schema = SCHEMA;
+
+  build() {
+    const program = super.build();
+    const type = program.body[0];
+    if (type.typeAnnotation.type === 'TSTypeReference') {
+      return program;
+    }
+
+    this.owner.tree.needsImportHelpers = true;
+
+    type.typeAnnotation = t.tsTypeReference(
+      REQUEST_BODY_HELPER,
+      t.tsTypeParameterInstantiation([type.typeAnnotation]),
+    );
+
+    return program;
+  }
 }

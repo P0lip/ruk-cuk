@@ -20,7 +20,10 @@
     "ruk-cuk": "./bin/index.mjs"
   },
   "exports": {
-    ".": "./src/codegen/index.mjs"
+    ".": "./src/codegen/index.mjs",
+    "./helpers.d.ts": {
+      "types": "./src/helpers.d.ts"
+    }
   },
   "imports": {
     "#cli/*": "./src/cli/*.mjs",

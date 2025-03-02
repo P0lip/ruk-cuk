@@ -1,9 +1,12 @@
 import * as t from '@babel/types';
 
 import printTree from './utils/print-tree.mjs';
+import { HELPERS_IMPORT } from './utils/ruk-cuk-helpers.mjs';
 
 export default class Tree {
   nodes = [];
+  program;
+  needsImportHelpers = false;
 
   #hoisted = new WeakMap();
   #header;
@@ -13,6 +16,8 @@ export default class Tree {
     this.config = config;
     this.#header = config.header ?? '';
     this.#footer = config.footer ?? '';
+    this.program = t.program(this.nodes, [], 'module');
+    this.root = this.program;
   }
 
   hoist(name, node) {
@@ -40,6 +45,12 @@ export default class Tree {
   }
 
   toString() {
-    return [this.#header, printTree(this.root), this.#footer].join('\n').trim();
+    if (this.needsImportHelpers) {
+      this.program.body.unshift(HELPERS_IMPORT);
+    }
+
+    return [this.#header, printTree(this.program), this.#footer]
+      .join('\n')
+      .trim();
   }
 }

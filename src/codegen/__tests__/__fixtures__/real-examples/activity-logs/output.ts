@@ -1,3 +1,4 @@
+import type * as RukCukTypeHelpers from "ruk-cuk/helpers.d.ts";
 declare namespace Activity {
   type Actions = {
     "v1.activity": {
@@ -17,31 +18,31 @@ declare namespace Activity {
     /**
      * Base64 encoded "wk:" + workspace ID
      */
-    workspace_id: string;
+    workspace_id: RukCukTypeHelpers.PathParam<string>;
     /**
      * Filter list before a specific created date. Useful for pagination.
      */
-    before?: string;
+    before?: RukCukTypeHelpers.QueryParam<string>;
     /**
      * Filter list after a specific created date. Useful for pagination.
      */
-    after?: string;
+    after?: RukCukTypeHelpers.QueryParam<string>;
     /**
      * Limit the size of the list returned
      * @defaultValue `50`
      */
-    limit?: number;
+    limit?: RukCukTypeHelpers.QueryParam<number>;
     /**
      * Filter to a specific activity types
      */
-    type?: ActivityType[];
+    type?: RukCukTypeHelpers.QueryParam<ActivityType[]>;
     /**
      * Filter to a specific group ID
      */
-    group?: string;
+    group?: RukCukTypeHelpers.QueryParam<string>;
   };
   type ByWorkspaceResponse = Activity[];
-  type HasuraEventHandlerParams = {
+  type HasuraEventHandlerParams = RukCukTypeHelpers.RequestBody<{
     event: {
       session_variables: Record<string, unknown> | null;
       op: "INSERT" | "UPDATE" | "DELETE" | "MANUAL";
@@ -64,7 +65,7 @@ declare namespace Activity {
       [k: string]: unknown;
     };
     [k: string]: unknown;
-  };
+  }>;
   type Activity = {
     id: string;
     type: ActivityType;

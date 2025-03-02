@@ -5,7 +5,8 @@
   },
   "globals": {
     "globalThis": true,
-    "AggregateError": true
+    "AggregateError": true,
+    "structuredClone": true
   },
   "env": {
     "es6": true

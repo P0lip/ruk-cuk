@@ -1,5 +1,12 @@
+import * as t from '@babel/types';
 import { isPlainObject } from '@stoplight/json';
 
+import {
+  COOKIE_PARAM_HELPER,
+  HEADER_PARAM_HELPER,
+  PATH_PARAM_HELPER,
+  QUERY_PARAM_HELPER,
+} from '../../codegen/utils/ruk-cuk-helpers.mjs';
 import { extractRukCukNameExtension } from '../../utils/extensions.mjs';
 import { toPascalCase } from '../../utils/strings.mjs';
 import { registerSchema } from '../../validation/ajv.mjs';
@@ -28,6 +35,13 @@ const SCHEMA = registerSchema({
   type: 'object',
 });
 
+const HELPERS_MATCH = {
+  cookie: COOKIE_PARAM_HELPER,
+  header: HEADER_PARAM_HELPER,
+  path: PATH_PARAM_HELPER,
+  query: QUERY_PARAM_HELPER,
+};
+
 export default class ParameterObject extends BaseObject {
   #object;
 
@@ -37,6 +51,8 @@ export default class ParameterObject extends BaseObject {
     const name = extractRukCukNameExtension(definition) ?? definition.name;
     this.name = toPascalCase(name);
     this.in = definition.in;
+
+    owner.tree.needsImportHelpers = true;
 
     const schema = {
       additionalProperties: false,
@@ -63,6 +79,21 @@ export default class ParameterObject extends BaseObject {
   static schema = SCHEMA;
 
   build() {
-    return BaseObject.build(this.#object);
+    const program = structuredClone(BaseObject.build(this.#object));
+    for (const child of program.body) {
+      if (child.type !== 'TSTypeAliasDeclaration') continue;
+      const typeAnnotation = child.typeAnnotation;
+      if (typeAnnotation.type !== 'TSTypeLiteral') continue;
+      for (const member of typeAnnotation.members) {
+        member.typeAnnotation.typeAnnotation = t.tsTypeReference(
+          HELPERS_MATCH[this.in],
+          t.tsTypeParameterInstantiation([
+            member.typeAnnotation.typeAnnotation,
+          ]),
+        );
+      }
+    }
+
+    return program;
   }
 }

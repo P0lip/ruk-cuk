@@ -1,3 +1,4 @@
+import type * as RukCukTypeHelpers from "ruk-cuk/helpers.d.ts";
 declare namespace Pets {
   type Actions = {
     "v1.petstore": {
@@ -8,7 +9,7 @@ declare namespace Pets {
   type GetPetParams = PetIdParam;
   type GetPetResponse = PetSchema;
   type PetIdParam = {
-    pet_id: string;
+    pet_id: RukCukTypeHelpers.PathParam<string>;
   };
   type NotFoundResponse = {
     message?: string;

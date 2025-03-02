@@ -1,3 +1,4 @@
+import type * as RukCukTypeHelpers from "ruk-cuk/helpers.d.ts";
 declare namespace Pets {
   type Actions = {
     "v1.petstore": {
@@ -6,8 +7,8 @@ declare namespace Pets {
   };
   type Events = never;
   type CreatePetParams = Pet;
-  type Pet = {
+  type Pet = RukCukTypeHelpers.RequestBody<{
     id?: number;
     kind?: "Dog" | "Cat";
-  };
+  }>;
 }

@@ -88,9 +88,37 @@ function isCompatibleComplexType(left, right, diff) {
       return (
         right.type === 'TSTypeLiteral' && isEqualTypeLiteral(left, right, diff)
       );
+    case 'TSTypeReference':
+      return (
+        right.type === 'TSTypeReference' &&
+        isEqualTypeReference(left, right, diff)
+      );
+    case 'TSQualifiedName':
+      return (
+        right.type === 'TSQualifiedName' && isEqual(left.right, right.right)
+      );
     default:
       return false;
   }
+}
+
+function isEqualTypeReference(left, right, diff) {
+  return (
+    isEqual(left.typeName, right.typeName, diff) &&
+    ((left.typeParameters === void 0 && right.typeParameters === void 0) ||
+      isEqualTypeParameters(left.typeParameters, right.typeParameters, diff))
+  );
+}
+
+function isEqualTypeParameters(left, right, diff) {
+  if (left === void 0 || right === void 0) return false;
+  if (left.params.length !== right.params.length) return false;
+
+  for (let i = 0; i < left.params.length; i++) {
+    if (!isEqual(left.params[i], right.params[i], diff)) return false;
+  }
+
+  return true;
 }
 
 function isEqual(left, right, diff) {
@@ -103,6 +131,8 @@ function isEqual(left, right, diff) {
       return (
         left.type === right.type && left.literal.value === right.literal.value
       );
+    case left.type === 'Identifier':
+      return right.type === 'Identifier' && left.name === right.name;
     default:
       return isCompatibleComplexType(left, right, diff);
   }

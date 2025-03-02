@@ -1,5 +1,6 @@
 import * as t from '@babel/types';
 
+import { ARRAY_RANGE_HELPER } from '../../codegen/utils/ruk-cuk-helpers.mjs';
 import { registerSchema } from '../../validation/ajv.mjs';
 import assignObject from './schema-utils/assign-object.mjs';
 import BaseObject from './shared/base-object.mjs';
@@ -56,11 +57,10 @@ export default class ArrayObject extends BaseObject {
       return t.tsTupleType([...new Array(minItems).fill(hoistedObject)]);
     }
 
+    this.owner.tree.needsImportHelpers = true;
+
     return t.tsTypeReference(
-      t.tsQualifiedName(
-        t.identifier('RukCukTypeHelpers'),
-        t.identifier('ArrayRange'),
-      ),
+      ARRAY_RANGE_HELPER,
       t.tsTypeParameterInstantiation([
         BaseObject.build(this.#object),
         t.tsLiteralType(t.numericLiteral(minItems)),
