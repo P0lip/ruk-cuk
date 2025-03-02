@@ -5,7 +5,6 @@ declare namespace Activity {
        * List Workspace Activity
        */
       byWorkspace: (params: ByWorkspaceParams) => Promise<ByWorkspaceResponse>;
-
       /**
        * Hasura Activity Log Event Handler
        * @internal
@@ -19,28 +18,23 @@ declare namespace Activity {
      * Base64 encoded "wk:" + workspace ID
      */
     workspace_id: string;
-
     /**
      * Filter list before a specific created date. Useful for pagination.
      */
     before?: string;
-
     /**
      * Filter list after a specific created date. Useful for pagination.
      */
     after?: string;
-
     /**
      * Limit the size of the list returned
      * @defaultValue `50`
      */
     limit?: number;
-
     /**
      * Filter to a specific activity types
      */
     type?: ActivityType[];
-
     /**
      * Filter to a specific group ID
      */
@@ -74,22 +68,18 @@ declare namespace Activity {
   type Activity = {
     id: string;
     type: ActivityType;
-
     /**
      * Additional information specific to the activity type
      */
     metadata: Record<string, unknown>;
-
     /**
      * Timestamp when the activity was performed
      */
     created_at: string;
-
     /**
      * IP address of client where the activity was performed
      */
     ip_address: string | null;
-
     /**
      * User who performed the activity
      */
@@ -100,7 +90,6 @@ declare namespace Activity {
     } | null;
     [k: string]: unknown;
   };
-
   /**
    * Represents generic error
    */
@@ -109,12 +98,10 @@ declare namespace Activity {
      * Detailed error message
      */
     message: string;
-
     /**
      * HTTP Status Code
      */
     code: 400 | 401 | 403 | 404 | 409 | 500;
-
     /**
      * Error type
      */
@@ -122,32 +109,26 @@ declare namespace Activity {
     [k: string]: unknown;
   };
   type ActivityType = "create" | "move" | "read" | "delete" | "update";
-
   /**
    * The server could not understand the request due to invalid syntax.
    */
   type BadRequestError = Error | Record<string, unknown>;
-
   /**
    * The server can not find the requested resource.
    */
   type NotFoundError = Error;
-
   /**
    * The client must authenticate itself to get the requested response.
    */
   type UnauthorizedError = Error;
-
   /**
    * The client must be on the correct billing plan to access the content.
    */
   type PaymentRequired = Error;
-
   /**
    * The client does not have permissions to access the content.
    */
   type ForbiddenError = Error;
-
   /**
    * The server has encountered a situation it doesn't know how to handle.
    */

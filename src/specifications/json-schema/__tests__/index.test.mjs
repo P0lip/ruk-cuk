@@ -263,7 +263,6 @@ type Users_User = {
    * Unique identifier
    */
   id: number;
-
   /**
    * Name of a user
    */
