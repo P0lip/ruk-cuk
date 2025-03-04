@@ -9,6 +9,7 @@ function assertValidEnumUsage(schema) {
   for (const item of schema.enum) {
     const foundType = getType(item);
     if (foundType === 'integer' && schema.type.includes('number')) continue;
+    if (foundType === 'null' && schema.nullable === true) continue;
 
     assert.ok(schema.type.includes(foundType));
   }

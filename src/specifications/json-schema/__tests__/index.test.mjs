@@ -303,4 +303,14 @@ type Users_User = {
 }>;`,
     );
   });
+
+  it('supports nullable', () => {
+    const document = {
+      type: 'string',
+      nullable: true,
+      enum: ['a', 'b', null],
+    };
+
+    expect(print(document)).to.eq(`type Model = "a" | "b" | null;`);
+  });
 });
