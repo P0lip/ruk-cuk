@@ -30,7 +30,7 @@ const SCHEMA = registerSchema({
         $ref: './path-item-object',
       },
       propertyNames: {
-        pattern: '^\\/.',
+        pattern: '^\\/',
       },
       type: 'object',
     },
