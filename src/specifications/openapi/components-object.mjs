@@ -3,6 +3,7 @@ import { isPlainObject } from '@stoplight/json';
 
 import buildObject from '../../codegen/utils/build-object.mjs';
 import { extractRukCukNameExtension } from '../../utils/extensions.mjs';
+import { toPascalCase } from '../../utils/strings.mjs';
 import { registerSchema } from '../../validation/ajv.mjs';
 import BaseObject from '../shared/base-object.mjs';
 import ParameterObject from './parameter-object.mjs';
@@ -62,19 +63,19 @@ export default class ComponentsObject extends BaseObject {
 
     for (const [key, definition] of ComponentsObject.#entries(schemas)) {
       const name = extractRukCukNameExtension(definition) ?? key;
-      objects.push(new SchemaObject(definition, this, name));
+      objects.push(new SchemaObject(definition, this, toPascalCase(name)));
       this.resolver.store(definition, objects.at(-1));
     }
 
     for (const [key, definition] of ComponentsObject.#entries(responses)) {
       const name = extractRukCukNameExtension(definition) ?? key;
-      objects.push(new ResponseObject(definition, this, name));
+      objects.push(new ResponseObject(definition, this, toPascalCase(name)));
       this.resolver.store(definition, objects.at(-1));
     }
 
     for (const [key, definition] of ComponentsObject.#entries(requestBodies)) {
       const name = extractRukCukNameExtension(definition) ?? key;
-      objects.push(new RequestBodyObject(definition, this, name));
+      objects.push(new RequestBodyObject(definition, this, toPascalCase(name)));
       this.resolver.store(definition, objects.at(-1));
     }
   }
